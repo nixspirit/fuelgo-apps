@@ -12,6 +12,7 @@ import com.jetbrains.kmpapp.data.pump.PumpRepository
 import com.jetbrains.kmpapp.data.pump.PumpStorage
 import com.jetbrains.kmpapp.screens.detail.DetailScreenModel
 import com.jetbrains.kmpapp.screens.pump.PumpScreenModel
+import com.jetbrains.kmpapp.screens.pump.PetrolScreenModel
 import com.jetbrains.kmpapp.screens.list.ListScreenModel
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -54,6 +55,7 @@ val screenModelsModule = module {
     factoryOf(::ListScreenModel)
     factoryOf(::DetailScreenModel)
     factoryOf(::PumpScreenModel)
+    factoryOf(::PetrolScreenModel)
 }
 
 fun initKoin() {

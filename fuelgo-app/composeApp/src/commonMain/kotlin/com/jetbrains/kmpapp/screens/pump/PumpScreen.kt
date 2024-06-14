@@ -134,7 +134,7 @@ fun ObjectTiles(
                     columns = GridCells.Adaptive(minSize = 128.dp)
                 ) {
                     items(objects) {
-                        PumpButton(onClick = {}, pump = it)
+                        PumpButton(onClick = { onObjectClick(it.objectID) }, pump = it)
                     }
                 }
             }
@@ -152,15 +152,15 @@ private fun BottomButtons(
         windowInsets = WindowInsets.ime,
         backgroundColor = bottomBarColor,
         content = {
-                Row(
-                    modifier = modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    MenuButton(onClick = {}, menuIcon = Res.drawable.car_icon)
-                    MenuButton(onClick = {}, menuIcon = Res.drawable.address_location_icon)
-                    MenuButton(onClick = {}, menuIcon = Res.drawable.discount_icon)
-                    MenuButton(onClick = {}, menuIcon = Res.drawable.woman_icon)
-                }
+            Row(
+                modifier = modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                MenuButton(onClick = {}, menuIcon = Res.drawable.car_icon)
+                MenuButton(onClick = {}, menuIcon = Res.drawable.address_location_icon)
+                MenuButton(onClick = {}, menuIcon = Res.drawable.discount_icon)
+                MenuButton(onClick = {}, menuIcon = Res.drawable.woman_icon)
+            }
         },
     )
 }
