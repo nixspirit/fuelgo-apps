@@ -36,8 +36,7 @@ class PumpRepository(
         scope.launch {
             delay(2000L)
             pumpApi.watchFilling(pumpId, petrolId) { event ->
-                println("Process event " + event)
-                status.value += 0.1F
+                status.value += event.diff
             }
         }
 

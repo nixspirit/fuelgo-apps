@@ -5,6 +5,7 @@ import io.ktor.client.call.body
 import io.ktor.client.plugins.sse.sse
 import io.ktor.client.request.get
 import kotlinx.coroutines.flow.Flow
+import kotlinx.serialization.json.Json
 import kotlin.coroutines.cancellation.CancellationException
 
 
@@ -55,19 +56,27 @@ class KtorPumpApi(private val client: HttpClient) : PumpApi {
         }
     }
 
-    override suspend fun watchFilling(pumpId: Int, petrolId: Int, eventProcessor: (PetrolStatus) -> Unit) {
-//        client.sse(host = "localhost", port = 8080, path = "/events") {
-//            while (true) {
-//                incoming.collect { event ->
-//                    println("Event from server:")
-//                    println(event)
-//
-//                    eventProcessor(PetrolStatus(1F))
-//                }
-//            }
-//        }
+    override suspend fun watchFilling(
+        pumpId: Int,
+        petrolId: Int,
+        eventProcessor: (PetrolStatus) -> Unit
+    ) {
+        client.sse(host = "192.168.1.23", port = 8080, path = "/events") {
+            while (true) {
+                incoming.collect { event ->
+                    println("Event from server: " + event.data)
 
-      
+                    val jsonString: PetrolStatus? =
+                        event.data?.let { Json.decodeFromString<PetrolStatus>(it) }
+                    println("OBJ from JSON $jsonString")
+
+                    if (jsonString != null) {
+                        eventProcessor(jsonString)
+                    }
+                }
+            }
+        }
+
 
     }
 }
