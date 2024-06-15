@@ -1,4 +1,4 @@
-package com.jetbrains.kmpapp.screens.detail
+package com.jetbrains.kmpapp.screens.backup.detail
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
@@ -34,7 +34,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.jetbrains.kmpapp.data.MuseumObject
+import com.jetbrains.kmpapp.data.backup.MuseumObject
 import com.jetbrains.kmpapp.screens.EmptyScreenContent
 import fuelgo_app.composeapp.generated.resources.Res
 import fuelgo_app.composeapp.generated.resources.back
