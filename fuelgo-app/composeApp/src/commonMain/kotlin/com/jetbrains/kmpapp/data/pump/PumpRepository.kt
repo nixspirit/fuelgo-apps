@@ -2,6 +2,7 @@ package com.jetbrains.kmpapp.data.pump
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -30,6 +31,15 @@ class PumpRepository(
     }
 
     fun getObjectById(objectId: Int): Flow<PumpObject?> = pumpStorage.getObjectById(objectId)
-
-
+    fun getPumpStatus(pumpId: Int, petrolId: Int): MutableStateFlow<Float> {
+        val status = MutableStateFlow<Float>(0F)
+        scope.launch {
+            for (i in 1..30) {
+                delay(2000L)
+                status.value += 0.1F
+                println(">> STATUS " + status.value)
+            }
+        }
+        return status;
+    }
 }

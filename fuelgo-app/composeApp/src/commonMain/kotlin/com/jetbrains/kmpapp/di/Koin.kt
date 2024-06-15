@@ -11,6 +11,7 @@ import com.jetbrains.kmpapp.data.pump.PumpApi
 import com.jetbrains.kmpapp.data.pump.PumpRepository
 import com.jetbrains.kmpapp.data.pump.PumpStorage
 import com.jetbrains.kmpapp.screens.detail.DetailScreenModel
+import com.jetbrains.kmpapp.screens.pump.ProgressScreenModel
 import com.jetbrains.kmpapp.screens.pump.PumpScreenModel
 import com.jetbrains.kmpapp.screens.pump.PetrolScreenModel
 import com.jetbrains.kmpapp.screens.list.ListScreenModel
@@ -56,6 +57,7 @@ val screenModelsModule = module {
     factoryOf(::DetailScreenModel)
     factoryOf(::PumpScreenModel)
     factoryOf(::PetrolScreenModel)
+    factoryOf(::ProgressScreenModel)
 }
 
 fun initKoin() {
