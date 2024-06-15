@@ -34,12 +34,13 @@ class PumpRepository(
     fun getPumpStatus(pumpId: Int, petrolId: Int): MutableStateFlow<Float> {
         val status = MutableStateFlow<Float>(0F)
         scope.launch {
-            for (i in 1..30) {
-                delay(2000L)
+            delay(2000L)
+            pumpApi.watchFilling(pumpId, petrolId) { event ->
+                println("Process event " + event)
                 status.value += 0.1F
-                println(">> STATUS " + status.value)
             }
         }
+
         return status;
     }
 }

@@ -23,6 +23,7 @@ import kotlinx.serialization.json.Json
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
+import io.ktor.client.plugins.sse.*
 
 val dataModule = module {
     single {
@@ -31,6 +32,10 @@ val dataModule = module {
             install(ContentNegotiation) {
                 // TODO Fix API so it serves application/json
                 json(json, contentType = ContentType.Any)
+            }
+            install(SSE) {
+                showCommentEvents()
+                showRetryEvents()
             }
         }
     }

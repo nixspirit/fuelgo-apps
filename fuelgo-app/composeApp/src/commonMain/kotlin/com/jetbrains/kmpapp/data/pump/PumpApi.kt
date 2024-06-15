@@ -2,6 +2,7 @@ package com.jetbrains.kmpapp.data.pump
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.sse.sse
 import io.ktor.client.request.get
 import kotlinx.coroutines.flow.Flow
 import kotlin.coroutines.cancellation.CancellationException
@@ -10,6 +11,7 @@ import kotlin.coroutines.cancellation.CancellationException
 interface PumpApi {
     suspend fun getData(): List<PumpObject>
     fun getPetrolTypes(objectId: Int): List<PetrolObject?>
+    suspend fun watchFilling(pumpId: Int, petrolId: Int, eventProcessor: (PetrolStatus) -> Unit)
 }
 
 class KtorPumpApi(private val client: HttpClient) : PumpApi {
@@ -51,5 +53,21 @@ class KtorPumpApi(private val client: HttpClient) : PumpApi {
 
             emptyList()
         }
+    }
+
+    override suspend fun watchFilling(pumpId: Int, petrolId: Int, eventProcessor: (PetrolStatus) -> Unit) {
+//        client.sse(host = "localhost", port = 8080, path = "/events") {
+//            while (true) {
+//                incoming.collect { event ->
+//                    println("Event from server:")
+//                    println(event)
+//
+//                    eventProcessor(PetrolStatus(1F))
+//                }
+//            }
+//        }
+
+      
+
     }
 }

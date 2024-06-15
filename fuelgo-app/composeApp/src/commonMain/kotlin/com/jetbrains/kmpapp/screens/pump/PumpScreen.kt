@@ -43,12 +43,21 @@ import fuelgo_app.composeapp.generated.resources.discount_icon
 import fuelgo_app.composeapp.generated.resources.woman_icon
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.ui.UiComposable
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import com.jetbrains.kmpapp.data.pump.HasId
+import fuelgo_app.composeapp.generated.resources.back
 import fuelgo_app.composeapp.generated.resources.gas_station_icon
 import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.stringResource
 
 data object PumpScreen : Screen {
 
@@ -56,14 +65,15 @@ data object PumpScreen : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val screenModel: PumpScreenModel = getScreenModel()
-
         val objects by screenModel.objects.collectAsState()
 
         AnimatedContent(objects.isNotEmpty()) { objectsAvailable ->
             if (!objectsAvailable) {
                 EmptyScreenContent(Modifier.fillMaxSize())
+
             } else {
                 MainView(
+                    topBarText = "Select a pump",
                     content = {
                         GridView(
                             objects = objects,
@@ -84,22 +94,32 @@ var topBarColor = bottomBarColor;
 var buttonBackgroundColor = Color(204, 204, 204)
 var mainBackgroundColor = Color(229, 117, 117, 255);
 
-
 @Composable
 fun MainView(
+    topBarText: String = "",
+    hasBackButton: Boolean = false,
+    onBackClick: () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     Scaffold(
         topBar = {
             TopAppBar(backgroundColor = topBarColor) {
                 Row {
+                    if (hasBackButton) {
+                        IconButton(onClick = onBackClick) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                stringResource(Res.string.back)
+                            )
+                        }
+                    }
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = TextUnit(8F, TextUnitType.Em),
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = TextUnit(6F, TextUnitType.Em),
                         color = Color.White,
-                        text = "Select a pump"
+                        text = topBarText
                     )
                 }
             }
@@ -109,6 +129,8 @@ fun MainView(
         content = { innerPadding ->
             Column(
                 modifier = Modifier.padding(innerPadding).fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 content()
             }
@@ -120,7 +142,7 @@ fun MainView(
 @Composable
 fun GridView(
     objects: List<*>,
-    onObjectClick: (Int) -> Unit,
+    onObjectClick: (HasId) -> Unit,
     itemBackgroundImage: DrawableResource,
 ) {
 
@@ -136,7 +158,7 @@ fun GridView(
         items(objects) {
             it as HasId
             PumpButton(
-                onClick = { onObjectClick(it.objectID) },
+                onClick = { onObjectClick(it) },
                 pump = it,
                 itemBackgroundImage
             )
@@ -156,7 +178,7 @@ fun BottomButtons(
         content = {
             Row(
                 modifier = modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement = Arrangement.Center
             ) {
                 MenuButton(onClick = {}, menuIcon = Res.drawable.car_icon)
                 MenuButton(onClick = {}, menuIcon = Res.drawable.address_location_icon)
@@ -174,7 +196,7 @@ fun MenuButton(
     menuIcon: DrawableResource
 ) {
     Button(
-        contentPadding = PaddingValues(horizontal = 5.dp, vertical = 15.dp),
+        contentPadding = PaddingValues(horizontal = 15.dp, vertical = 15.dp),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = buttonBackgroundColor
         ),
@@ -183,7 +205,7 @@ fun MenuButton(
             disabledElevation = 2.dp
         ),
         onClick = onClick,
-        modifier = modifier,
+        modifier = modifier.padding(horizontal = 5.dp, vertical = 5.dp),
         content = {
             Column(verticalArrangement = Arrangement.SpaceBetween) {
                 Image(
@@ -210,23 +232,45 @@ fun PumpButton(
             disabledElevation = 2.dp
         ),
         onClick = onClick,
-        modifier = Modifier.padding(5.dp),
+        modifier = Modifier.padding(15.dp),
         content = {
             Box(modifier = Modifier.align(alignment = Alignment.CenterVertically)) {
                 Image(
-                    modifier = Modifier.fillMaxSize().align(alignment = Alignment.Center),
+                    modifier = Modifier.fillMaxSize(),
                     painter = painterResource(backgroundImage),
                     contentDescription = "pump"
                 )
-                Text(
-                    pump.title,
-                    Modifier.fillMaxSize().align(alignment = Alignment.CenterStart)
-                        .wrapContentSize(),
-                    color = androidx.compose.ui.graphics.Color.White,
-                    fontSize = TextUnit(12F, TextUnitType.Em),
-                    fontWeight = FontWeight.ExtraBold
-                )
+                OutlinedText(pump.title)
             }
         }
     )
+}
+
+@Composable
+fun OutlinedText(text: String) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Text(
+            text,
+            Modifier.fillMaxSize()
+                .align(alignment = Alignment.Center)
+                .wrapContentSize(),
+            color = Color(153, 0, 0),
+            fontSize = TextUnit(12F, TextUnitType.Em),
+            fontWeight = FontWeight.ExtraBold,
+            style = TextStyle.Default.copy(
+                drawStyle = Stroke(
+                    width = 10f,
+                    join = StrokeJoin.Round
+                )
+            )
+        )
+        Text(
+            text,
+            Modifier.fillMaxSize().align(alignment = Alignment.Center)
+                .wrapContentSize(),
+            color = Color(255, 255, 255),
+            fontSize = TextUnit(12F, TextUnitType.Em),
+            fontWeight = FontWeight.ExtraBold,
+        )
+    }
 }
