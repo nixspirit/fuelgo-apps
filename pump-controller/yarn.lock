@@ -1882,6 +1882,11 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
+"@stomp/stompjs@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@stomp/stompjs/-/stompjs-7.0.0.tgz#46b5c454a9dc8262e0b20f3b3dbacaa113993077"
+  integrity sha512-fGdq4wPDnSV/KyOsjq4P+zLc8MFWC3lMmP5FBgLWKPJTYcuCbAIrnRGjB7q2jHZdYCOD5vxLuFoKIYLy5/u8Pw==
+
 "@surma/rollup-plugin-off-main-thread@^2.2.3":
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/@surma/rollup-plugin-off-main-thread/-/rollup-plugin-off-main-thread-2.2.3.tgz#ee34985952ca21558ab0d952f00298ad2190c053"
@@ -2268,6 +2273,11 @@
   dependencies:
     "@types/mime" "^1"
     "@types/node" "*"
+
+"@types/sockjs-client@^1.5.1":
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/@types/sockjs-client/-/sockjs-client-1.5.4.tgz#2c0b6aadf0cfeb49cd210e4c59995a6608fbd8ea"
+  integrity sha512-zk+uFZeWyvJ5ZFkLIwoGA/DfJ+pYzcZ8eH4H/EILCm2OBZyHH6Hkdna1/UWL/CFruh5wj6ES7g75SvUB0VsH5w==
 
 "@types/sockjs@^0.3.33":
   version "0.3.33"
@@ -4799,6 +4809,11 @@ events@^3.2.0:
   resolved "https://registry.yarnpkg.com/events/-/events-3.3.0.tgz#31a95ad0a924e2d2c419a813aeb2c4e878ea7400"
   integrity sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==
 
+eventsource@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/eventsource/-/eventsource-2.0.2.tgz#76dfcc02930fb2ff339520b6d290da573a9e8508"
+  integrity sha512-IzUmBGPR3+oUG9dUeXynyNmf91/3zUSJg1lCktzKw47OXuhco54U3r9B7O4XX+Rb1Itm9OZ2b0RkTs10bICOxA==
+
 execa@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/execa/-/execa-1.0.0.tgz#c6236a5bb4df6d6f15e88e7f017798216749ddd8"
@@ -4954,7 +4969,7 @@ fastq@^1.6.0:
   dependencies:
     reusify "^1.0.4"
 
-faye-websocket@^0.11.3:
+faye-websocket@^0.11.3, faye-websocket@^0.11.4:
   version "0.11.4"
   resolved "https://registry.yarnpkg.com/faye-websocket/-/faye-websocket-0.11.4.tgz#7f0d9275cfdd86a1c963dc8b65fcc451edcbb1da"
   integrity sha512-CzbClwlXAuiRQAlUyfqPgvPoNKTckTPGfwZV4ZdAhVcP2lh9KUxJg2b5GkE7XbjKQ3YJnQ9z6D9ntLAlB+tP8g==
@@ -8792,6 +8807,11 @@ qs@6.10.3:
   dependencies:
     side-channel "^1.0.4"
 
+querystringify@^2.1.1:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/querystringify/-/querystringify-2.2.0.tgz#3345941b4153cb9d082d8eee4cda2016a9aef7f6"
+  integrity sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==
+
 queue-microtask@^1.2.2:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/queue-microtask/-/queue-microtask-1.2.3.tgz#4929228bbc724dfac43e0efb058caf7b6cfb6243"
@@ -9094,6 +9114,20 @@ react-shallow-renderer@16.14.1:
   dependencies:
     object-assign "^4.1.1"
     react-is "^16.12.0 || ^17.0.0"
+
+react-stomp-hooks@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/react-stomp-hooks/-/react-stomp-hooks-3.0.0.tgz#77f81c31d7c1ac2a2aa70d36fc3f5d97876f6f69"
+  integrity sha512-bJ+FKapPjEeIuBgylkwhygVkmaNokKevQtamQUVVtzzZQW6DcuIIMA+KW+gSFYf6wUhqUlzM82DXWSqcUT+V7Q==
+  dependencies:
+    "@stomp/stompjs" "^7.0.0"
+    "@types/sockjs-client" "^1.5.1"
+    sockjs-client "^1.6.0"
+
+react-use-websocket@^4.8.1:
+  version "4.8.1"
+  resolved "https://registry.yarnpkg.com/react-use-websocket/-/react-use-websocket-4.8.1.tgz#be06a0bc956c6d56391a29cbe2caa6ae8edb5615"
+  integrity sha512-FTXuG5O+LFozmu1BRfrzl7UIQngECvGJmL7BHsK4TYXuVt+mCizVA8lT0hGSIF0Z0TedF7bOo1nRzOUdginhDw==
 
 react@^18.2.0:
   version "18.2.0"
@@ -9748,6 +9782,17 @@ snapdragon@^0.8.1:
     source-map "^0.5.6"
     source-map-resolve "^0.5.0"
     use "^3.1.0"
+
+sockjs-client@^1.6.0:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/sockjs-client/-/sockjs-client-1.6.1.tgz#350b8eda42d6d52ddc030c39943364c11dcad806"
+  integrity sha512-2g0tjOR+fRs0amxENLi/q5TiJTqY+WXFOzb5UwXndlK6TO3U/mirZznpx6w34HVMoc3g7cY24yC/ZMIYnDlfkw==
+  dependencies:
+    debug "^3.2.7"
+    eventsource "^2.0.2"
+    faye-websocket "^0.11.4"
+    inherits "^2.0.4"
+    url-parse "^1.5.10"
 
 sockjs@^0.3.24:
   version "0.3.24"
@@ -10555,6 +10600,14 @@ urix@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/urix/-/urix-0.1.0.tgz#da937f7a62e21fec1fd18d49b35c2935067a6c72"
   integrity sha512-Am1ousAhSLBeB9cG/7k7r2R0zj50uDRlZHPGbazid5s9rlF1F/QKYObEKSIunSjIOkJZqwRRLpvewjEkM7pSqg==
+
+url-parse@^1.5.10:
+  version "1.5.10"
+  resolved "https://registry.yarnpkg.com/url-parse/-/url-parse-1.5.10.tgz#9d3c2f736c1d75dd3bd2be507dcc111f1e2ea9c1"
+  integrity sha512-WypcfiRhfeUP9vvF0j6rw0J3hrWrw6iZv3+22h6iRMJ/8z1Tj6XfLP4DsUix5MhMPnXpiHDoKyoZ/bdCkwBCiQ==
+  dependencies:
+    querystringify "^2.1.1"
+    requires-port "^1.0.0"
 
 use-sync-external-store@^1.0.0:
   version "1.2.0"

@@ -1,18 +1,29 @@
 import React, {useEffect, useState} from "react";
 import "./App.css";
-import {Text, createTheme, ThemeProvider, Card, ButtonGroup, Icon, useTheme, Theme} from "@rneui/themed";
-import {PatternFormat, NumericFormat} from 'react-number-format';
-import CountUp from 'react-countup';
+import {ButtonGroup, Card, createTheme, Text, ThemeProvider} from "@rneui/themed";
+import {NumericFormat} from 'react-number-format';
 
 import {StyleSheet, View} from "react-native";
+import {Client, Message} from '@stomp/stompjs';
 
 const theme = createTheme({});
 
 function App() {
     const [pumpState, setPumpState] = useState<PumpState>();
 
+    const client = new Client({
+        brokerURL: 'ws://localhost:8081/state',
+        onConnect: () => {
+        },
+    });
+
+    client.activate();
+
+    console.log(client.brokerURL);
+
     const pumpEventChanged = (state: PumpState) => {
         console.log("pump event changed", state);
+        client.publish({destination: '/app/pump/' + state.id + '/state', body: JSON.stringify(state)})
     };
 
     return (
@@ -28,13 +39,14 @@ function App() {
           src: url(${require("react-native-vector-icons/Fonts/FontAwesome.ttf")}) format('truetype');
         }
       `}</style>
-
             <ThemeProvider theme={theme}>
                 <div className="App">
                     <View style={styles.container}>
+
                         <Pump id={1} onChange={pumpEventChanged}/>
                         <Pump id={2} onChange={pumpEventChanged}/>
                         <Pump id={3} onChange={pumpEventChanged}/>
+
                     </View>
                 </div>
             </ThemeProvider>
@@ -51,12 +63,40 @@ interface PumpState {
     id: number,
     litres: number,
     grade: number,
-    event: number
+    gradeName: string,
+    event: number,
+    eventName: string
 }
 
 const Pump = (props: PumpProps) => {
-    const [pumpState, setPumpState] = useState<PumpState>({id: props.id, litres: 0.0, grade: -1, event: -1});
     const [start, setStart] = useState(false);
+    const [register, setRegister] = useState(false);
+    const PETROLS = ['E5', 'E10', 'Diesel'];
+    const EVENTS = ['Take the nozzle', 'Pull the trigger', 'Release the trigger', 'Return the nozzle'];
+    const getEmptyState = () => {
+        return {
+            id: props.id,
+            litres: 0.0,
+            grade: -1,
+            gradeName: "",
+            event: -1,
+            eventName: ""
+        }
+    }
+    const [pumpState, setPumpState] = useState<PumpState>(getEmptyState());
+
+    useEffect(() => {
+        if (register) {
+            return;
+        }
+        registerPump(props.id).then((data) => {
+            setRegister(true)
+        }).catch((e) => {
+            console.error(e);
+            setRegister(false)
+        });
+
+    }, []);
 
     useEffect(() => {
         if (!start) {
@@ -67,7 +107,9 @@ const Pump = (props: PumpProps) => {
                 id: props.id,
                 litres: pumpState.litres + Math.random(),
                 grade: pumpState.grade,
-                event: pumpState.event
+                gradeName: pumpState.gradeName,
+                event: pumpState.event,
+                eventName: pumpState.eventName,
             };
             setPumpState(newPumpState);
             props.onChange(newPumpState);
@@ -78,7 +120,6 @@ const Pump = (props: PumpProps) => {
 
     return (
         <>
-
             <Card containerStyle={styles.pump}>
                 <Card.Title>Pump #{props.id}</Card.Title>
                 <Card.Divider/>
@@ -91,14 +132,16 @@ const Pump = (props: PumpProps) => {
                 </Text>
                 <Text h3>Grade of gasoline</Text>
                 <ButtonGroup
-                    buttons={['E5', 'E10', 'Diesel']}
+                    buttons={PETROLS}
                     selectedIndex={pumpState.grade}
-                    onPress={(value) => {
+                    onPress={(value, k) => {
                         let newPumpSTate = {
                             id: props.id,
                             litres: pumpState.litres,
                             grade: value,
-                            event: pumpState.event
+                            gradeName: PETROLS[value],
+                            event: pumpState.event,
+                            eventName: pumpState.eventName
                         };
                         setPumpState(newPumpSTate);
                         props.onChange(newPumpSTate);
@@ -107,7 +150,7 @@ const Pump = (props: PumpProps) => {
                 />
                 <Text h3>Event</Text>
                 <ButtonGroup
-                    buttons={['Take the nozzle', 'Pull the trigger', 'Release the trigger', 'Return the nozzle']}
+                    buttons={EVENTS}
                     selectedIndex={pumpState.event}
                     onPress={(value) => {
 
@@ -115,7 +158,9 @@ const Pump = (props: PumpProps) => {
                             id: props.id,
                             litres: pumpState.litres,
                             grade: pumpState.grade,
-                            event: value
+                            gradeName: pumpState.gradeName,
+                            event: value,
+                            eventName: EVENTS[value]
                         };
                         if (value === 1) {
                             setStart(true);
@@ -124,7 +169,8 @@ const Pump = (props: PumpProps) => {
                             setStart(false);
 
                         } else if (value === 3) {
-                            newPumpState = {id: props.id, litres: 0.0, grade: -1, event: -1};
+                            setStart(false);
+                            newPumpState = getEmptyState();
                         }
 
                         setPumpState(newPumpState);
@@ -139,6 +185,17 @@ const Pump = (props: PumpProps) => {
     );
 };
 
+async function registerPump(id: number): Promise<{}> {
+    const response = await fetch('http://localhost:8081/pump/' + id, {
+        mode: 'no-cors',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({id: id})
+    });
+    return await response.json();
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -152,6 +209,5 @@ const styles = StyleSheet.create({
 
     }
 });
-
 
 export default App;
