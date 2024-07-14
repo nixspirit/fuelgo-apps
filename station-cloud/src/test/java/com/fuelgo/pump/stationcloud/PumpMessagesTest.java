@@ -1,5 +1,6 @@
 package com.fuelgo.pump.stationcloud;
 
+import com.fuelgo.pump.stationcloud.stomp.PumpMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,6 +43,7 @@ class PumpMessagesTest {
 
         final CountDownLatch latch = new CountDownLatch(1);
         final AtomicReference<Throwable> failure = new AtomicReference<>();
+        PumpMessage payload = new PumpMessage(1, 20, 92, "E5", 1, "Take");
 
         StompSessionHandler handler = new TestSessionHandler(failure) {
 
@@ -70,7 +72,7 @@ class PumpMessagesTest {
                     }
                 });
                 try {
-                    session.send("/app/pump/1/state", new PumpMessage(1, 20, 92, 1));
+                    session.send("/app/pump/1/state", payload);
                 } catch (Throwable t) {
                     failure.set(t);
                     latch.countDown();

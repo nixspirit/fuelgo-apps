@@ -89,7 +89,7 @@ const Pump = (props: PumpProps) => {
         if (register) {
             return;
         }
-        registerPump(props.id).then((data) => {
+        registerPump(props.id, PETROLS).then((data) => {
             setRegister(true)
         }).catch((e) => {
             console.error(e);
@@ -185,14 +185,15 @@ const Pump = (props: PumpProps) => {
     );
 };
 
-async function registerPump(id: number): Promise<{}> {
+async function registerPump(id: number, petrols: string[]): Promise<{}> {
     const response = await fetch('http://localhost:8081/pump/' + id, {
-        mode: 'no-cors',
+        // mode: 'no-cors',
         method: 'POST',
         headers: {
+            'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({id: id})
+        body: JSON.stringify({id: id, petrols: petrols})
     });
     return await response.json();
 }

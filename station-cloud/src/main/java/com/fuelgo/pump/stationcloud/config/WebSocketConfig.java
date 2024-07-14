@@ -1,4 +1,4 @@
-package com.fuelgo.pump.stationcloud;
+package com.fuelgo.pump.stationcloud.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
