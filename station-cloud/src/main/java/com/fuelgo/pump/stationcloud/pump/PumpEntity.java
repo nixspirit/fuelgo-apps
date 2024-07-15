@@ -4,20 +4,25 @@ import com.fuelgo.pump.stationcloud.petrol.PetrolEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Value;
+import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
-@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 @Entity
-public class PumpEntity {
+public class PumpEntity implements Comparable<PumpEntity> {
 
     @Id
     private int id;
 
     @ManyToMany
-    private List<PetrolEntity> petrolList;
+    private Set<PetrolEntity> petrolList;
 
+    @Override
+    public int compareTo(PumpEntity o) {
+        return Integer.compare(id, o.id);
+    }
 }

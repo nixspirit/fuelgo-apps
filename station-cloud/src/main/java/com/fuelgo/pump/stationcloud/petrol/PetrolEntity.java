@@ -9,10 +9,15 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
+@Data
 @Entity
-public class PetrolEntity {
+public class PetrolEntity implements Comparable<PetrolEntity> {
 
     @Id
     private String id;
+
+    @Override
+    public int compareTo(PetrolEntity o) {
+        return id.compareTo(o.id);
+    }
 }
