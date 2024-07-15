@@ -2,15 +2,13 @@ package com.fuelgo.pump.stationcloud.petrol;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Entity
+@EqualsAndHashCode
 public class PetrolEntity implements Comparable<PetrolEntity> {
 
     @Id

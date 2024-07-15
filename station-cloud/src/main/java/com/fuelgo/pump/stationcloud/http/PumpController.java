@@ -4,10 +4,14 @@ import com.fuelgo.pump.stationcloud.pump.PumpService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @Slf4j
@@ -28,6 +32,12 @@ public class PumpController {
     @GetMapping(path = "/pump/")
     public Flux<PumpData> getPumps() {
         return pumpService.getPumps();
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping(path = "/petrol/")
+    public Set<String> getPetrol() {
+        return pumpService.getPetrol();
     }
 
 }

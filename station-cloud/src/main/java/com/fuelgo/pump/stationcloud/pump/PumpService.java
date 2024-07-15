@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,10 +27,7 @@ public class PumpService {
     public void updatePumpData(PumpData pumpData) {
         log.info("Updating pump data {}", pumpData);
 
-        Set<PetrolEntity> petrolEntitySet = pumpData.getPetrols().stream()
-                .map(Mappers.INSTANCE::toEntity).collect(Collectors.toSet());
-
-        Set<PetrolEntity> petrolEntities = Utils.toSet(petrolRepository.saveAll(petrolEntitySet));
+        Set<PetrolEntity> petrolEntities = updatePetrol(pumpData);
 
         Optional<PumpEntity> pumpEntity = pumpRepository.findById(pumpData.getId());
         if (pumpEntity.isPresent()) {
@@ -40,7 +39,27 @@ public class PumpService {
         }
     }
 
+    private Set<PetrolEntity> updatePetrol(PumpData pumpData) {
+        Set<PetrolEntity> petrolEntitySet = pumpData.getPetrols().stream()
+                .map(Mappers.INSTANCE::toEntity).collect(Collectors.toSet());
+
+        return petrolEntitySet.stream().map(p -> {
+                    try {
+                        p = petrolRepository.save(p);
+                    } catch (Throwable ex) {
+                        log.error("Petrol exists {}, {}", p, ex.getMessage());
+                    }
+
+                    return p;
+                }
+        ).collect(Collectors.toSet());
+    }
+
     public Flux<PumpData> getPumps() {
         return Flux.fromStream(Utils.toStream(pumpRepository.findAll()).map(Mappers.INSTANCE::toPumpData));
+    }
+
+    public Set<String> getPetrol() {
+        return Utils.toStream(petrolRepository.findAll()).map(PetrolEntity::getId).collect(Collectors.toSet());
     }
 }
