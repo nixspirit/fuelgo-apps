@@ -1,4 +1,4 @@
-package com.fuelgo.cloud;
+package com.fuelgo.cloud.http;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
