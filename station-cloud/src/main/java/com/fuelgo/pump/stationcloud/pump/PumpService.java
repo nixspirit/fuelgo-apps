@@ -9,9 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,18 +28,18 @@ public class PumpService {
 
         Set<PetrolEntity> petrolEntities = updatePetrol(pumpData);
 
-        Optional<PumpEntity> pumpEntity = pumpRepository.findById(pumpData.getId());
+        Optional<PumpEntity> pumpEntity = pumpRepository.findById(pumpData.id());
         if (pumpEntity.isPresent()) {
             PumpEntity pumpEntity1 = pumpEntity.get();
             pumpEntity1.setPetrolList(petrolEntities);
             pumpRepository.save(pumpEntity1);
         } else {
-            pumpRepository.save(new PumpEntity(pumpData.getId(), petrolEntities));
+            pumpRepository.save(new PumpEntity(pumpData.id(), petrolEntities));
         }
     }
 
     private Set<PetrolEntity> updatePetrol(PumpData pumpData) {
-        Set<PetrolEntity> petrolEntitySet = pumpData.getPetrols().stream()
+        Set<PetrolEntity> petrolEntitySet = pumpData.petrols().stream()
                 .map(Mappers.INSTANCE::toEntity).collect(Collectors.toSet());
 
         return petrolEntitySet.stream().map(p -> {
@@ -61,5 +60,11 @@ public class PumpService {
 
     public Set<String> getPetrol() {
         return Utils.toStream(petrolRepository.findAll()).map(PetrolEntity::getId).collect(Collectors.toSet());
+    }
+
+    public Mono<PumpData> getPump(int id) {
+        return Mono.just(
+                pumpRepository.findById(id).map(Mappers.INSTANCE::toPumpData).orElseThrow()
+        );
     }
 }

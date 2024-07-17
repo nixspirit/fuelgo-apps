@@ -6,6 +6,7 @@ import com.fuelgo.cloud.http.PetrolData;
 import com.fuelgo.cloud.http.PumpData;
 import com.fuelgo.cloud.http.PumpState;
 import com.fuelgo.cloud.http.StationData;
+import com.fuelgo.cloud.out.GasStationService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -20,6 +21,7 @@ import java.util.Random;
 public class PumpService {
 
     private final ObjectMapper jsonMapper;
+    private final GasStationService gasStationService;
 
     public Flux<StationData> getStations(int lat, String lon) {
         return Flux.just(new StationData(1, "Test", List.of(), 0, 0));
@@ -29,12 +31,12 @@ public class PumpService {
         return Mono.just(new StationData(1, "Test", List.of(), 0, 0));
     }
 
-    public Flux<PumpData> getStationPumps(String stationId) {
-        return Flux.fromIterable(List.of(new PumpData(1, List.of()), new PumpData(2, List.of())));
+    public Flux<PumpData> getStationPumps(int stationId) {
+        return gasStationService.getPumps();
     }
 
-    public Flux<PetrolData> getStationPumpPetrol(String stationId, String pumpId) {
-        return Flux.fromIterable(List.of(new PetrolData("E5"), new PetrolData("E10")));
+    public Mono<PumpData> getStationPumpPetrol(int stationId, int pumpId) {
+        return gasStationService.getPumpById(pumpId);
     }
 
     public Flux<String> fueling(String stationId, String pumpId, String petrolId) {

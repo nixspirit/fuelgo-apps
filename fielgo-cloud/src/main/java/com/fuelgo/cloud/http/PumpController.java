@@ -26,12 +26,12 @@ public class PumpController {
     }
 
     @GetMapping("/station/{stationId}/pumps/")
-    public Flux<PumpData> getStationPumps(@PathVariable String stationId) {
+    public Flux<PumpData> getStationPumps(@PathVariable int stationId) {
         return pumpService.getStationPumps(stationId);
     }
 
-    @GetMapping("/station/{stationId}/pumps/{pumpId}/petrol")
-    public Flux<PetrolData> getStationPumpPetrol(@PathVariable String stationId, @PathVariable String pumpId) {
+    @GetMapping("/station/{stationId}/pumps/{pumpId}")
+    public Mono<PumpData> getStationPump(@PathVariable int stationId, @PathVariable int pumpId) {
         return pumpService.getStationPumpPetrol(stationId, pumpId);
     }
 

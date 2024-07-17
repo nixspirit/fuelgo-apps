@@ -8,7 +8,6 @@ import com.fuelgo.pump.stationcloud.pump.PumpRepository;
 import com.fuelgo.pump.stationcloud.pump.PumpService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.StreamSupport;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -69,10 +67,10 @@ public class PumpServiceTest {
 
         List<PumpData> pumpDataList = Objects.requireNonNull(pumpService.getPumps().collectList().block()).stream().sorted().toList();
         Assertions.assertFalse(pumpDataList.isEmpty());
-        Assertions.assertEquals(1, pumpDataList.get(0).getId());
-        Assertions.assertEquals(List.of("E10", "E5"), pumpDataList.get(0).getPetrols().stream().sorted().toList());
+        Assertions.assertEquals(1, pumpDataList.get(0).id());
+        Assertions.assertEquals(List.of("E10", "E5"), pumpDataList.get(0).petrols().stream().sorted().toList());
 
-        Assertions.assertEquals(2, pumpDataList.get(1).getId());
-        Assertions.assertEquals(List.of("E10", "E5"), pumpDataList.get(0).getPetrols().stream().sorted().toList());
+        Assertions.assertEquals(2, pumpDataList.get(1).id());
+        Assertions.assertEquals(List.of("E10", "E5"), pumpDataList.get(0).petrols().stream().sorted().toList());
     }
 }

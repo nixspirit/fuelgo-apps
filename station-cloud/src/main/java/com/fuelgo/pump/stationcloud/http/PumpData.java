@@ -4,11 +4,7 @@ import lombok.Data;
 
 import java.util.List;
 
-@Data
-public class PumpData implements Comparable<PumpData> {
-
-    private final int id;
-    private final List<String> petrols;
+public record PumpData(int id, List<String> petrols) implements Comparable<PumpData> {
 
     @Override
     public int compareTo(PumpData o) {

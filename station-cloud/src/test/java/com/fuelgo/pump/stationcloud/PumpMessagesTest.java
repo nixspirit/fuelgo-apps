@@ -49,7 +49,7 @@ class PumpMessagesTest {
 
             @Override
             public void afterConnected(final StompSession session, StompHeaders connectedHeaders) {
-                session.subscribe("/topic/pump/1", new StompFrameHandler() {
+                session.subscribe("/topic/pump/", new StompFrameHandler() {
                     @Override
                     public Type getPayloadType(StompHeaders headers) {
                         return PumpMessage.class;
