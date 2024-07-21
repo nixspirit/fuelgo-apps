@@ -1,4 +1,4 @@
-package com.fuelgo.cloud.pump;
+package com.fuelgo.cloud.service;
 
 import com.fuelgo.cloud.helper.Utils;
 import com.fuelgo.cloud.http.contract.PumpData;

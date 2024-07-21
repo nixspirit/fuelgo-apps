@@ -1,6 +1,5 @@
-package com.fuelgo.cloud.pump;
+package com.fuelgo.cloud.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fuelgo.cloud.http.contract.PumpData;
 import com.fuelgo.cloud.http.contract.PumpState;
 import com.fuelgo.cloud.http.contract.StationData;
@@ -23,10 +22,6 @@ public class PumpService {
 
     private final GasStationService gasStationService;
     private final ApplicationContext applicationContext;
-
-    public Flux<StationData> getStations(int lat, String lon) {
-        return Flux.just(new StationData(1, "Test", List.of(), 0, 0));
-    }
 
     public Mono<StationData> getStation(int stationId) {
         return Mono.just(new StationData(1, "Test", List.of(), 0, 0));
