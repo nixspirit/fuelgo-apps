@@ -23,11 +23,41 @@ public class PumpService {
     private final PumpRepository pumpRepository;
     private final PetrolRepository petrolRepository;
 
-    public void updatePumpData(PumpData pumpData) {
+    /**
+     * @return list of pumps available along with their current state.
+     */
+    public Flux<PumpData> getPumps() {
+        return Flux.fromStream(Utils.toStream(pumpRepository.findAll())
+                .map(Mappers.INSTANCE::toPumpData));
+    }
+
+    /**
+     * @return a set of fuel types available.
+     */
+    public Set<String> getFuelTypes() {
+        return Utils.toStream(petrolRepository.findAll())
+                .map(PetrolEntity::getId)
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * @param id is pump identifier
+     * @return information on a particular pump
+     */
+    public Mono<PumpData> getPump(int id) {
+        return Mono.just(pumpRepository.findById(id)
+                .map(Mappers.INSTANCE::toPumpData)
+                .orElseThrow());
+    }
+
+    /**
+     * Saves or updates the pump with new data.
+     *
+     * @param pumpData the current state
+     */
+    public void saveOrUpdatePumpData(PumpData pumpData) {
         log.info("Updating pump data {}", pumpData);
-
         Set<PetrolEntity> petrolEntities = updatePetrol(pumpData);
-
         Optional<PumpEntity> pumpEntity = pumpRepository.findById(pumpData.id());
         if (pumpEntity.isPresent()) {
             PumpEntity pumpEntity1 = pumpEntity.get();
@@ -54,17 +84,4 @@ public class PumpService {
         ).collect(Collectors.toSet());
     }
 
-    public Flux<PumpData> getPumps() {
-        return Flux.fromStream(Utils.toStream(pumpRepository.findAll()).map(Mappers.INSTANCE::toPumpData));
-    }
-
-    public Set<String> getPetrol() {
-        return Utils.toStream(petrolRepository.findAll()).map(PetrolEntity::getId).collect(Collectors.toSet());
-    }
-
-    public Mono<PumpData> getPump(int id) {
-        return Mono.just(
-                pumpRepository.findById(id).map(Mappers.INSTANCE::toPumpData).orElseThrow()
-        );
-    }
 }

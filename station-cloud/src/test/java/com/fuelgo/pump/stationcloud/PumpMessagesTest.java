@@ -37,19 +37,17 @@ class PumpMessagesTest {
         this.stompClient.setMessageConverter(new MappingJackson2MessageConverter());
     }
 
-
     @Test
     public void testMessageReceived() throws Exception {
-
         final CountDownLatch latch = new CountDownLatch(1);
         final AtomicReference<Throwable> failure = new AtomicReference<>();
         PumpMessage payload = new PumpMessage(1, 20, 92, "E5", 1, "Take");
 
-        StompSessionHandler handler = new TestSessionHandler(failure) {
+        StompSessionHandler handler = new MockSessionHandler(failure) {
 
             @Override
             public void afterConnected(final StompSession session, StompHeaders connectedHeaders) {
-                session.subscribe("/topic/pump/", new StompFrameHandler() {
+                session.subscribe("/topic/pump/1", new StompFrameHandler() {
                     @Override
                     public Type getPayloadType(StompHeaders headers) {
                         return PumpMessage.class;
@@ -92,11 +90,11 @@ class PumpMessagesTest {
 
     }
 
-    private static class TestSessionHandler extends StompSessionHandlerAdapter {
+    private static class MockSessionHandler extends StompSessionHandlerAdapter {
 
         private final AtomicReference<Throwable> failure;
 
-        public TestSessionHandler(AtomicReference<Throwable> failure) {
+        public MockSessionHandler(AtomicReference<Throwable> failure) {
             this.failure = failure;
         }
 
@@ -115,5 +113,4 @@ class PumpMessagesTest {
             this.failure.set(ex);
         }
     }
-
 }

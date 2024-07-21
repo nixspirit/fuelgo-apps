@@ -4,25 +4,19 @@ import {ButtonGroup, Card, createTheme, Text, ThemeProvider} from "@rneui/themed
 import {NumericFormat} from 'react-number-format';
 
 import {StyleSheet, View} from "react-native";
-import {Client, Message} from '@stomp/stompjs';
+import {Client} from '@stomp/stompjs';
 
 const theme = createTheme({});
 
 function App() {
-    const [pumpState, setPumpState] = useState<PumpState>();
-
     const client = new Client({
         brokerURL: 'ws://localhost:8081/state',
         onConnect: () => {
         },
     });
-
     client.activate();
 
-    console.log(client.brokerURL);
-
     const pumpEventChanged = (state: PumpState) => {
-        console.log("pump event changed", state);
         client.publish({destination: '/app/pump/' + state.id + '/state', body: JSON.stringify(state)})
     };
 
@@ -42,11 +36,9 @@ function App() {
             <ThemeProvider theme={theme}>
                 <div className="App">
                     <View style={styles.container}>
-
                         <Pump id={1} onChange={pumpEventChanged}/>
                         <Pump id={2} onChange={pumpEventChanged}/>
                         <Pump id={3} onChange={pumpEventChanged}/>
-
                     </View>
                 </div>
             </ThemeProvider>

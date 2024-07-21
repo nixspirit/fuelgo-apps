@@ -35,7 +35,18 @@ public class PumpService {
         return gasStationService.getPumpById(pumpId);
     }
 
-    public Flux<PumpState> fueling(int stationId, int pumpId, int petrolId) {
+    /**
+     * This method sends events back to the caller leveraging SSE and FluxSink emitter.
+     * GasStationStompHandler subscribes for new events from an external service (Gas Station Backend).
+     * Every time a new events published by the Gas Station Backend, this event gets queued.
+     * The next message on the queue is sent to the Mobile App.
+     *
+     * @param stationId a gas station identifier
+     * @param pumpId    a pump identifier
+     * @param petrolId  a fuel identifier (e.g. E5, E10)
+     * @return a stream of events
+     */
+    public Flux<PumpState> fueling(int stationId, int pumpId, String petrolId) {
         GasStationStompHandler sessionHandler = new GasStationStompHandler(pumpId);
         WebSocketStompClient stationStompClient = getStationStompClient(sessionHandler);
         return Flux.<PumpMessage>create(fluxSink -> {
@@ -55,6 +66,10 @@ public class PumpService {
                 .doFinally(d -> stationStompClient.stop());
     }
 
+    /**
+     * @param sessionHandler describes the message handling process.
+     * @return a new instance of the stomp client.
+     */
     private WebSocketStompClient getStationStompClient(StompSessionHandler sessionHandler) {
         return (WebSocketStompClient) applicationContext.getBean("stationStompClient", sessionHandler);
     }

@@ -35,7 +35,7 @@ public class PumpServiceTest {
         Assertions.assertEquals(0, pumpRepository.count());
 
         PumpData data = new PumpData(pumpId, List.of("E5", "E10"));
-        pumpService.updatePumpData(data);
+        pumpService.saveOrUpdatePumpData(data);
 
         List<PetrolEntity> petrolEntities = Utils.toList(petrolRepository.findAll());
         Assertions.assertNotNull(petrolEntities);
@@ -54,7 +54,6 @@ public class PumpServiceTest {
         Assertions.assertEquals("E10", petrolList.get(0).getId());
         Assertions.assertEquals("E5", petrolList.get(1).getId());
     }
-
 
     @Test
     public void test_getPumps_returnedList() {

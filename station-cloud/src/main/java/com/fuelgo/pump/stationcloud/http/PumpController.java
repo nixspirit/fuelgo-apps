@@ -24,7 +24,7 @@ public class PumpController {
     @PostMapping(path = "/pump/{id}")
     public Mono<ResponseEntity<?>> register(@RequestBody PumpData pumpData) {
         log.info("Pump {} registered with pumpData {}", pumpData.id(), pumpData);
-        pumpService.updatePumpData(pumpData);
+        pumpService.saveOrUpdatePumpData(pumpData);
         return Mono.just(ResponseEntity.status(HttpStatus.OK).body("{\"status\":\"ok\"}"));
     }
 
@@ -46,7 +46,7 @@ public class PumpController {
     @CrossOrigin(origins = "*")
     @GetMapping(path = "/fuel/")
     public Set<String> getFuelType() {
-        return pumpService.getPetrol();
+        return pumpService.getFuelTypes();
     }
 
 }
