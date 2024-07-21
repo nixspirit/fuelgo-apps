@@ -1,4 +1,4 @@
-package com.fuelgo.cloud.http;
+package com.fuelgo.cloud.http.contract;
 
 import java.util.List;
 

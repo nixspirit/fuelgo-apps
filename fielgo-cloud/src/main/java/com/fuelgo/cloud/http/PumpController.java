@@ -1,5 +1,8 @@
 package com.fuelgo.cloud.http;
 
+import com.fuelgo.cloud.http.contract.PumpData;
+import com.fuelgo.cloud.http.contract.PumpState;
+import com.fuelgo.cloud.http.contract.StationData;
 import com.fuelgo.cloud.pump.PumpService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -36,7 +39,7 @@ public class PumpController {
     }
 
     @GetMapping(path = "/station/{stationId}/pumps/{pumpId}/petrol/{petrolId}/fueling", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<String> fuelingProgress(@PathVariable String stationId, @PathVariable String pumpId, @PathVariable String petrolId) {
+    public Flux<PumpState> fuelingProgress(@PathVariable int stationId, @PathVariable int pumpId, @PathVariable int petrolId) {
         return pumpService.fueling(stationId, pumpId, petrolId);
     }
 

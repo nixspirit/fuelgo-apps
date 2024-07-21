@@ -1,4 +1,4 @@
-package com.fuelgo.cloud.http;
+package com.fuelgo.cloud.http.contract;
 
 public record PetrolData(String id) {
 }

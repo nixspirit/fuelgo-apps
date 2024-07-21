@@ -1,27 +1,28 @@
 package com.fuelgo.cloud.pump;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fuelgo.cloud.http.PetrolData;
-import com.fuelgo.cloud.http.PumpData;
-import com.fuelgo.cloud.http.PumpState;
-import com.fuelgo.cloud.http.StationData;
+import com.fuelgo.cloud.http.contract.PumpData;
+import com.fuelgo.cloud.http.contract.PumpState;
+import com.fuelgo.cloud.http.contract.StationData;
 import com.fuelgo.cloud.out.GasStationService;
+import com.fuelgo.cloud.out.GasStationStompHandler;
+import com.fuelgo.cloud.out.PumpMessage;
 import lombok.AllArgsConstructor;
+import org.springframework.context.ApplicationContext;
+import org.springframework.messaging.simp.stomp.StompSessionHandler;
 import org.springframework.stereotype.Service;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
 import java.util.List;
-import java.util.Random;
 
 @AllArgsConstructor
 @Service
 public class PumpService {
 
-    private final ObjectMapper jsonMapper;
     private final GasStationService gasStationService;
+    private final ApplicationContext applicationContext;
 
     public Flux<StationData> getStations(int lat, String lon) {
         return Flux.just(new StationData(1, "Test", List.of(), 0, 0));
@@ -39,19 +40,27 @@ public class PumpService {
         return gasStationService.getPumpById(pumpId);
     }
 
-    public Flux<String> fueling(String stationId, String pumpId, String petrolId) {
-        Random rd = new Random();
+    public Flux<PumpState> fueling(int stationId, int pumpId, int petrolId) {
+        GasStationStompHandler sessionHandler = new GasStationStompHandler(pumpId);
+        WebSocketStompClient stationStompClient = getStationStompClient(sessionHandler);
+        return Flux.<PumpMessage>create(fluxSink -> {
+                    while (true) {
+                        try {
+                            PumpMessage t = sessionHandler.nextMessage();
+                            fluxSink.next(t);
+                            if (t.isTerminate())
+                                break;
 
-        return Flux.interval(Duration.ofSeconds(1))
-                .handle((sequence, sink) -> {
-                    PumpState state = new PumpState(1, rd.nextFloat(), 10f);
-                    try {
-                        sink.next(jsonMapper.writeValueAsString(state));
-                    } catch (JsonProcessingException e) {
-                        sink.error(new RuntimeException(e));
+                        } catch (InterruptedException e) {
+                            fluxSink.error(new RuntimeException(e));
+                        }
                     }
-                });
+                }).takeUntil(PumpMessage::isTerminate)
+                .map(pm -> new PumpState(pm.id(), pm.litres()))
+                .doFinally(d -> stationStompClient.stop());
     }
 
-
+    private WebSocketStompClient getStationStompClient(StompSessionHandler sessionHandler) {
+        return (WebSocketStompClient) applicationContext.getBean("stationStompClient", sessionHandler);
+    }
 }

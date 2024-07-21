@@ -1,8 +1,8 @@
 package com.fuelgo.cloud.pump;
 
 import com.fuelgo.cloud.helper.Utils;
-import com.fuelgo.cloud.http.PumpData;
-import com.fuelgo.cloud.http.StationData;
+import com.fuelgo.cloud.http.contract.PumpData;
+import com.fuelgo.cloud.http.contract.StationData;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

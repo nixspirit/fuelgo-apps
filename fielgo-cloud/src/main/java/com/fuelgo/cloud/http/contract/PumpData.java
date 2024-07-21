@@ -1,6 +1,4 @@
-package com.fuelgo.cloud.http;
-
-import lombok.Data;
+package com.fuelgo.cloud.http.contract;
 
 import java.util.List;
 
