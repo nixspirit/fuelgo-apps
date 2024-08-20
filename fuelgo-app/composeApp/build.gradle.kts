@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.secretsGradle)
 }
 
 kotlin {
@@ -55,6 +56,11 @@ kotlin {
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.koin)
 
+
+            implementation(libs.play.services.maps)
+            implementation (libs.maps.compose)
+            implementation (libs.maps.compose.utils)
+            implementation (libs.maps.compose.widgets)
         }
     }
 }
@@ -91,8 +97,18 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     dependencies {
         debugImplementation(libs.androidx.compose.ui.tooling)
     }
+
+    secrets {
+        propertiesFileName = "secrets.properties"
+        defaultPropertiesFileName = "local.defaults.properties"
+        ignoreList.add("keyToIgnore") // Ignore the key "keyToIgnore"
+        ignoreList.add("sdk.*")       // Ignore all keys matching the regexp "sdk.*"
+    }
+
 }
+

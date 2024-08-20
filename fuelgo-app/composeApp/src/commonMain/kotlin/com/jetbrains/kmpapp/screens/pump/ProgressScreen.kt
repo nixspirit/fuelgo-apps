@@ -27,6 +27,8 @@ import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.jetbrains.kmpapp.data.pump.HasId
+import com.jetbrains.kmpapp.screens.mainBackgroundColor
+import com.jetbrains.kmpapp.screens.topBarColor
 import com.jetbrains.kmpapp.screens.utils.AnimatedCounter
 
 data class ProgressScreen(val pump: HasId, val petrol: HasId) : Screen {

@@ -12,6 +12,8 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.jetbrains.kmpapp.data.pump.HasId
 import com.jetbrains.kmpapp.screens.EmptyScreenContent
+import com.jetbrains.kmpapp.screens.GridView
+import com.jetbrains.kmpapp.screens.MainView
 import fuelgo_app.composeapp.generated.resources.Res
 import fuelgo_app.composeapp.generated.resources.fuel_pump_icon
 
