@@ -16,16 +16,12 @@ data object MapScreen : Screen {
         MainView(
             topBarText = "Select a pump",
             content = {
-                val userLocations = LatLong(52.42962319302576, 4.843224920635642)
+                val userLocations = LatLong(52.4296577360724, 4.842836525941346)
                 GoogleMaps(
                     modifier = Modifier.fillMaxSize(),
                     userLocation = userLocations
                 ) {
-                    Marker(
-                        id = "1",
-                        title = "Shell",
-                        position = LatLong(52.429691722292816, 4.843483005707954)
-                    )
+
                 }
             }
         )
