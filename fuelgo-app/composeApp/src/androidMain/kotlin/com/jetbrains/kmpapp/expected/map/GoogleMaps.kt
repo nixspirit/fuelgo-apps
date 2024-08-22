@@ -4,16 +4,28 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.LightingColorFilter
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NoLiveLiterals
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -26,11 +38,13 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerInfoWindow
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import com.jetbrains.kmpapp.R
 import com.jetbrains.kmpapp.screens.pump.PetrolScreen
 import com.jetbrains.kmpapp.screens.pump.PumpScreen
+import okhttp3.internal.wait
 
 
 //https://github.com/realityexpander/FredsRoadtripStoryteller/blob/main/shared/src/androidMain/kotlin/GoogleMaps.kt
@@ -110,10 +124,7 @@ actual fun GoogleMaps(
         modifier = Modifier.background(MaterialTheme.colors.background, RectangleShape),
         uiSettings = uiSettings,
         properties = properties,
-        onMapClick = {
-//            infoMarkerState.hideInfoWindow()
-//            infoMarker = null
-        },
+        onMapClick = { },
         googleMapOptionsFactory = {
             GoogleMapOptions().apply {
                 this.backgroundColor(0x000000)
@@ -136,47 +147,12 @@ actual fun GoogleMaps(
             )
         }
 
-        // station
-        IconMarker(
+        GasStationMarker(
             context = LocalContext.current,
             position = LatLng(52.429691722292816, 4.843483005707954),
-            title = "Shell\nE5, E10, Diesel",
-            iconId = R.drawable.fuel_station_location_icon,
-            width = 180,
-            height = 190,
-            android.graphics.Color.GREEN,
             onMarkerInfoClick = { navigator.push(PumpScreen) }
         )
 
-//        val icon = bitmapDescriptorFromVector(
-//            LocalContext.current,
-//            R.drawable.fuel_station_location_icon,
-//            180,
-//            190,
-//            android.graphics.Color.GREEN
-//        )
-//        MarkerInfoWindow(
-//            state = rememberMarkerState(position = LatLng(52.429691722292816, 4.843483005707954)),
-//            icon = icon,
-//        ) { marker ->
-//            Box(
-//                modifier = Modifier
-//                    .background(
-//                        color = MaterialTheme.colors.onPrimary,
-//                        shape = RoundedCornerShape(35.dp, 35.dp, 35.dp, 35.dp)
-//                    )
-//            )
-//            Text(
-//                text = "Marker Title",
-//                textAlign = TextAlign.Center,
-//                modifier = Modifier
-//                    .padding(top = 10.dp)
-//                    .fillMaxWidth(),
-//                style = MaterialTheme.typography.h1,
-//                color = MaterialTheme.colors.primary,
-//            )
-//            Spacer(modifier = Modifier.height(8.dp))
-//        }
     }
 }
 
@@ -200,6 +176,58 @@ fun IconMarker(
         icon = icon,
         onInfoWindowClick = { onMarkerInfoClick() }
     )
+}
+
+@Composable
+fun GasStationMarker(
+    context: Context,
+    position: LatLng,
+    onMarkerInfoClick: () -> Unit
+) {
+    val icon = bitmapDescriptorFromVector(
+        context,
+        R.drawable.fuel_station_location_icon,
+        180,
+        190,
+        android.graphics.Color.GREEN
+    )
+    MarkerInfoWindow(
+        state = rememberMarkerState(position = position),
+        icon = icon,
+        onInfoWindowClick = { onMarkerInfoClick() }
+    ) { marker ->
+        marker.title = "Shell"
+        Box(
+            modifier = Modifier
+                .background(
+                    color = Color.LightGray,
+                    shape = RoundedCornerShape(35.dp, 35.dp, 35.dp, 35.dp)
+                )
+        ) {
+
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Shell",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 10.dp),
+                    style = MaterialTheme.typography.h5,
+                    color = Color.Black,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "E5, E10, Diesel",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 10.dp),
+                    style = MaterialTheme.typography.body1,
+                    color = Color.Blue,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
+    }
 }
 
 //https://github.com/BoltUIX/Compose-Google-Map/blob/main/app/src/main/java/com/compose/example/MainActivity.kt
