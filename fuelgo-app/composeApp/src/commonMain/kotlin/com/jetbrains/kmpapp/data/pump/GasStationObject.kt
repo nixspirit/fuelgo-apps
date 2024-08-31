@@ -1,7 +1,9 @@
 package com.jetbrains.kmpapp.data.pump
 
 @kotlinx.serialization.Serializable
-class PumpObject(
+class GasStationObject(
     override val objectID: Int,
     override val title: String,
+    val lat: Double,
+    val lon: Double
 ) : HasId

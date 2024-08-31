@@ -32,7 +32,7 @@ class PumpRepository(
 
     fun getObjectById(objectId: Int): Flow<PumpObject?> = pumpStorage.getObjectById(objectId)
     fun getPumpStatus(pumpId: Int, petrolId: Int): MutableStateFlow<Float> {
-        val status = MutableStateFlow<Float>(0F)
+        val status = MutableStateFlow(0F)
         scope.launch {
             delay(2000L)
             pumpApi.watchFilling(pumpId, petrolId) { event ->
@@ -41,5 +41,9 @@ class PumpRepository(
         }
 
         return status;
+    }
+
+    fun getGasStations(): MutableStateFlow<List<GasStationObject?>> {
+        return MutableStateFlow(pumpApi.getGasStations())
     }
 }

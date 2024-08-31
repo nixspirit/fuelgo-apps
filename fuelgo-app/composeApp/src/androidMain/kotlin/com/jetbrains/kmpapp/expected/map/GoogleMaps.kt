@@ -7,7 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,7 +17,6 @@ import androidx.compose.runtime.NoLiveLiterals
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,15 +34,13 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
-import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerInfoWindow
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import com.jetbrains.kmpapp.R
-import com.jetbrains.kmpapp.screens.pump.PetrolScreen
+import com.jetbrains.kmpapp.data.pump.GasStationObject
 import com.jetbrains.kmpapp.screens.pump.PumpScreen
-import okhttp3.internal.wait
 
 
 //https://github.com/realityexpander/FredsRoadtripStoryteller/blob/main/shared/src/androidMain/kotlin/GoogleMaps.kt
@@ -52,38 +48,17 @@ import okhttp3.internal.wait
 
 // Android Google Maps implementation
 @NoLiveLiterals
-@OptIn(MapsComposeExperimentalApi::class)
 @Composable
 actual fun GoogleMaps(
     modifier: Modifier,
-    isMapOptionSwitchesVisible: Boolean,
-    isTrackingEnabled: Boolean,
     userLocation: LatLong?,
-    markers: List<Marker>?,
-    shouldCalcClusterItems: Boolean,
-    onDidCalculateClusterItemList: () -> Unit, // Best for setting initial camera position bc zoom level is forced
-    shouldSetInitialCameraPosition: CameraPosition?, // Best for tracking user location
-    shouldCenterCameraOnLatLong: LatLong?, // Best for showing a bunch of markers
-    onDidCenterCameraOnLatLong: () -> Unit,
-    cameraLocationBounds: CameraLocationBounds?,
-    polyLine: List<LatLong>?,
-    onMapClick: ((LatLong) -> Unit)?,
-    onMapLongClick: ((LatLong) -> Unit)?,
-    onMarkerInfoClick: ((Marker) -> Unit)?,
-    seenRadiusMiles: Double,
-    cachedMarkersLastUpdatedLocation: Location?,
-    onToggleIsTrackingEnabledClick: (() -> Unit)?,
-    onFindMeButtonClick: (() -> Unit)?,
-    isMarkersLastUpdatedLocationVisible: Boolean,
-    shouldShowInfoMarker: Marker?,
-    onDidShowInfoMarker: () -> Unit,
-    shouldZoomToLatLongZoom: LatLongZoom?,
-    onDidZoomToLatLongZoom: () -> Unit,
-    shouldAllowCacheReset: Boolean,
-    onDidAllowCacheReset: () -> Unit,
+    gasStations: List<GasStationObject?>
 ) {
 
+    println(">>>> GAS STATIONS $gasStations" )
+
     val navigator = LocalNavigator.currentOrThrow
+
     val cameraPositionState = rememberCameraPositionState {
         if (userLocation != null) {
             position = com.google.android.gms.maps.model.CameraPosition.fromLatLngZoom(
@@ -96,25 +71,23 @@ actual fun GoogleMaps(
     val uiSettings by remember {
         mutableStateOf(
             MapUiSettings(
-                myLocationButtonEnabled = false, //!isTrackingEnabled,
+                myLocationButtonEnabled = false,
                 compassEnabled = false,
                 mapToolbarEnabled = false,
-                zoomControlsEnabled = false,  // the +/- buttons (obscures the FAB)
+                zoomControlsEnabled = true,
                 zoomGesturesEnabled = true,
                 scrollGesturesEnabled = true,
                 rotationGesturesEnabled = false,
             )
         )
     }
-//    val mapStyle = mapStyleLight()
 
-    var properties by remember {
+    val properties by remember {
         mutableStateOf(
             MapProperties(
-                isMyLocationEnabled = true,  // always show the dot
+                isMyLocationEnabled = true,
                 minZoomPreference = 1f,
                 maxZoomPreference = 25f,
-//                mapStyleOptions = MapStyleOptions(mapStyle)
             )
         )
     }
@@ -127,7 +100,6 @@ actual fun GoogleMaps(
         onMapClick = { },
         googleMapOptionsFactory = {
             GoogleMapOptions().apply {
-                this.backgroundColor(0x000000)
             }
         }
     ) {

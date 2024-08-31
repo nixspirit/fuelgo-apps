@@ -8,6 +8,8 @@ import com.jetbrains.kmpapp.data.pump.PumpStorage
 import com.jetbrains.kmpapp.screens.pump.PetrolScreenModel
 import com.jetbrains.kmpapp.screens.pump.ProgressScreenModel
 import com.jetbrains.kmpapp.screens.pump.PumpScreenModel
+import com.jetbrains.kmpapp.screens.map.MapScreenModel
+
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.sse.SSE
@@ -23,7 +25,6 @@ val dataModule = module {
         val json = Json { ignoreUnknownKeys = true }
         HttpClient {
             install(ContentNegotiation) {
-                // TODO Fix API so it serves application/json
                 json(json, contentType = ContentType.Any)
             }
             install(SSE) {
@@ -46,6 +47,7 @@ val screenModelsModule = module {
     factoryOf(::PumpScreenModel)
     factoryOf(::PetrolScreenModel)
     factoryOf(::ProgressScreenModel)
+    factoryOf(::MapScreenModel)
 }
 
 fun initKoin() {

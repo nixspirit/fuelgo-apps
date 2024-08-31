@@ -13,6 +13,7 @@ interface PumpApi {
     suspend fun getData(): List<PumpObject>
     fun getPetrolTypes(objectId: Int): List<PetrolObject?>
     suspend fun watchFilling(pumpId: Int, petrolId: Int, eventProcessor: (PetrolStatus) -> Unit)
+    fun getGasStations(): List<GasStationObject?>
 }
 
 class KtorPumpApi(private val client: HttpClient) : PumpApi {
@@ -78,5 +79,20 @@ class KtorPumpApi(private val client: HttpClient) : PumpApi {
         }
 
 
+    }
+
+    override fun getGasStations(): List<GasStationObject?> {
+        return try {
+            // client.get(API_URL).body()
+
+            return listOf(
+                GasStationObject(10, "Shell", 52.429691722292816, 4.843483005707954)
+            )
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            e.printStackTrace()
+
+            emptyList()
+        }
     }
 }
