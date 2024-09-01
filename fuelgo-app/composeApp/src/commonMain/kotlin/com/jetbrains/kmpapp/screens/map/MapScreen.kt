@@ -20,7 +20,7 @@ data object MapScreen : Screen {
         val gasStations by screenModel.objects.collectAsState()
 
         MainView(
-            topBarText = "Select a pump",
+            topBarText = "",
             content = {
                 val userLocations = LatLong(52.4296577360724, 4.842836525941346)
                 GoogleMaps(

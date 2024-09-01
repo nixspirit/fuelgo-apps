@@ -86,7 +86,21 @@ class KtorPumpApi(private val client: HttpClient) : PumpApi {
             // client.get(API_URL).body()
 
             return listOf(
-                GasStationObject(10, "Shell", 52.429691722292816, 4.843483005707954)
+                GasStationObject(
+                    10,
+                    "Shell",
+                    52.429691722292816,
+                    4.843483005707954,
+                    arrayListOf("E5, E10, Diesel")
+                ),
+
+                GasStationObject(
+                    12,
+                    "Total",
+                    52.43125594769359, 4.853267499617956,
+                    arrayListOf("E5, E10, Diesel", "AdBlue")
+                )
+
             )
         } catch (e: Exception) {
             if (e is CancellationException) throw e

@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.BitmapDescriptor
@@ -55,15 +56,13 @@ actual fun GoogleMaps(
     gasStations: List<GasStationObject?>
 ) {
 
-    println(">>>> GAS STATIONS $gasStations" )
-
     val navigator = LocalNavigator.currentOrThrow
 
     val cameraPositionState = rememberCameraPositionState {
         if (userLocation != null) {
             position = com.google.android.gms.maps.model.CameraPosition.fromLatLngZoom(
                 LatLng(userLocation.latitude, userLocation.longitude),
-                17f
+                16f
             )
         }
     }
@@ -115,16 +114,19 @@ actual fun GoogleMaps(
                 width = 130,
                 height = 180,
                 android.graphics.Color.BLUE,
-                onMarkerInfoClick = { println("clicked car") }
+                onMarkerInfoClick = { }
             )
         }
 
-        GasStationMarker(
-            context = LocalContext.current,
-            position = LatLng(52.429691722292816, 4.843483005707954),
-            onMarkerInfoClick = { navigator.push(PumpScreen) }
-        )
-
+        gasStations.forEach { station ->
+            if (station != null) {
+                GasStationMarker(
+                    context = LocalContext.current,
+                    station = station,
+                    navigator = navigator
+                )
+            }
+        }
     }
 }
 
@@ -153,8 +155,8 @@ fun IconMarker(
 @Composable
 fun GasStationMarker(
     context: Context,
-    position: LatLng,
-    onMarkerInfoClick: () -> Unit
+    station: GasStationObject,
+    navigator: Navigator
 ) {
     val icon = bitmapDescriptorFromVector(
         context,
@@ -163,12 +165,13 @@ fun GasStationMarker(
         190,
         android.graphics.Color.GREEN
     )
+
     MarkerInfoWindow(
-        state = rememberMarkerState(position = position),
+        state = rememberMarkerState(position = LatLng(station.lat, station.lon)),
         icon = icon,
-        onInfoWindowClick = { onMarkerInfoClick() }
+        onInfoWindowClick = { navigator.push(PumpScreen) }
     ) { marker ->
-        marker.title = "Shell"
+        marker.title = station.title
         Box(
             modifier = Modifier
                 .background(
@@ -182,7 +185,7 @@ fun GasStationMarker(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Shell",
+                    text = station.title,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(top = 10.dp),
                     style = MaterialTheme.typography.h5,
@@ -190,7 +193,7 @@ fun GasStationMarker(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "E5, E10, Diesel",
+                    text = station.fuelTypes.joinToString(", "),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(top = 10.dp),
                     style = MaterialTheme.typography.body1,
@@ -203,7 +206,6 @@ fun GasStationMarker(
 }
 
 //https://github.com/BoltUIX/Compose-Google-Map/blob/main/app/src/main/java/com/compose/example/MainActivity.kt
-
 fun bitmapDescriptorFromVector(
     context: Context,
     vectorResId: Int,

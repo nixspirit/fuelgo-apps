@@ -5,5 +5,6 @@ class GasStationObject(
     override val objectID: Int,
     override val title: String,
     val lat: Double,
-    val lon: Double
+    val lon: Double,
+    val fuelTypes: ArrayList<String>
 ) : HasId
