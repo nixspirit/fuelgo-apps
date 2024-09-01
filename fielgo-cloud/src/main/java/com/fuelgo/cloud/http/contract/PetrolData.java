@@ -1,4 +1,4 @@
 package com.fuelgo.cloud.http.contract;
 
-public record PetrolData(String id) {
+public record PetrolData(int objectID, String title) {
 }

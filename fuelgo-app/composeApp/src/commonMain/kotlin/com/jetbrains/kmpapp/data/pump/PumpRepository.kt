@@ -1,6 +1,8 @@
 package com.jetbrains.kmpapp.data.pump
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -8,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class PumpRepository(
+
     private val pumpApi: PumpApi,
     private val pumpStorage: PumpStorage
 ) {
@@ -44,6 +47,10 @@ class PumpRepository(
     }
 
     fun getGasStations(): MutableStateFlow<List<GasStationObject?>> {
-        return MutableStateFlow(pumpApi.getGasStations())
+        val result = MutableStateFlow<List<GasStationObject?>>(listOf())
+        scope.launch {
+            result.value = ArrayList(pumpApi.getGasStations())
+        }
+        return result
     }
 }

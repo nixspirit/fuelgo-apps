@@ -31,7 +31,7 @@ data class PetrolScreen(val pump: HasId) : Screen {
                 EmptyScreenContent(Modifier.fillMaxSize())
             } else {
                 MainView(
-                    topBarText = "Select a petrol",
+                    topBarText = "Select fuel type",
                     hasBackButton = true,
                     onBackClick = { navigator.pop() },
                     content = {

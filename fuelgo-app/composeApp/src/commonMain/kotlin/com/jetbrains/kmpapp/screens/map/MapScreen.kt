@@ -18,14 +18,14 @@ data object MapScreen : Screen {
 
         val screenModel: MapScreenModel = getScreenModel()
         val gasStations by screenModel.objects.collectAsState()
+        val currentLocation by screenModel.currentLocation.collectAsState()
 
         MainView(
             topBarText = "",
             content = {
-                val userLocations = LatLong(52.4296577360724, 4.842836525941346)
                 GoogleMaps(
                     modifier = Modifier.fillMaxSize(),
-                    userLocation = userLocations,
+                    userLocation = currentLocation,
                     gasStations = gasStations
                 )
             }

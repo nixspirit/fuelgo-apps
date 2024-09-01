@@ -46,7 +46,7 @@ public class PumpService {
      * @param petrolId  a fuel identifier (e.g. E5, E10)
      * @return a stream of events
      */
-    public Flux<PumpState> fueling(int stationId, int pumpId, String petrolId) {
+    public Flux<PumpState> fueling(int stationId, int pumpId, int petrolId) {
         GasStationStompHandler sessionHandler = new GasStationStompHandler(pumpId);
         WebSocketStompClient stationStompClient = getStationStompClient(sessionHandler);
         return Flux.<PumpMessage>create(fluxSink -> {

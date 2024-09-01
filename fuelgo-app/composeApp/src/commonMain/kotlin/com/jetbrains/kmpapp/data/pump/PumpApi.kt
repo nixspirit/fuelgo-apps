@@ -1,25 +1,40 @@
 package com.jetbrains.kmpapp.data.pump
 
+import com.jetbrains.kmpapp.data.EnvVars
+import com.jetbrains.kmpapp.screens.map.LocationProvider
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.sse.sse
 import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsText
+import io.ktor.client.utils.EmptyContent.headers
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.headers
+import io.ktor.http.path
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.json.Json
 import kotlin.coroutines.cancellation.CancellationException
 
 
 interface PumpApi {
+
     suspend fun getData(): List<PumpObject>
+
     fun getPetrolTypes(objectId: Int): List<PetrolObject?>
+
     suspend fun watchFilling(pumpId: Int, petrolId: Int, eventProcessor: (PetrolStatus) -> Unit)
-    fun getGasStations(): List<GasStationObject?>
+
+    suspend fun getGasStations(): List<GasStationObject>
 }
 
-class KtorPumpApi(private val client: HttpClient) : PumpApi {
-    companion object {
-        private const val API_URL = ""
-    }
+class KtorPumpApi(
+    private val client: HttpClient,
+    private val sseClient: HttpClient,
+    private val envVar: EnvVars,
+    private val locationProvider: LocationProvider
+) : PumpApi {
+
 
     override suspend fun getData(): List<PumpObject> {
         return try {
@@ -62,7 +77,7 @@ class KtorPumpApi(private val client: HttpClient) : PumpApi {
         petrolId: Int,
         eventProcessor: (PetrolStatus) -> Unit
     ) {
-        client.sse(host = "192.168.1.23", port = 8080, path = "/events") {
+        sseClient.sse(host = envVar.backendUrl, port = envVar.port, path = "/events") {
             while (true) {
                 incoming.collect { event ->
                     println("Event from server: " + event.data)
@@ -81,32 +96,22 @@ class KtorPumpApi(private val client: HttpClient) : PumpApi {
 
     }
 
-    override fun getGasStations(): List<GasStationObject?> {
-        return try {
-            // client.get(API_URL).body()
-
-            return listOf(
-                GasStationObject(
-                    10,
-                    "Shell",
-                    52.429691722292816,
-                    4.843483005707954,
-                    arrayListOf("E5, E10, Diesel")
-                ),
-
-                GasStationObject(
-                    12,
-                    "Total",
-                    52.43125594769359, 4.853267499617956,
-                    arrayListOf("E5, E10, Diesel", "AdBlue")
-                )
-
-            )
-        } catch (e: Exception) {
-            if (e is CancellationException) throw e
-            e.printStackTrace()
-
-            emptyList()
+    override suspend fun getGasStations(): List<GasStationObject> {
+        val location = locationProvider.getCurrentLocation().value;
+        val response = client.get(envVar.backendUrl) {
+            headers {
+                append(HttpHeaders.Accept, ContentType.Application.Json.contentType)
+            }
+            url {
+                host = envVar.backendUrl
+                port = envVar.port
+                path("/map/station/${location.latitude}/${location.longitude}")
+            }
         }
+
+        val json: String = response.body()
+        println("json $json")
+
+        return response.body()
     }
 }

@@ -16,6 +16,7 @@ kotlin {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
+
     }
 
     listOf(
@@ -34,8 +35,7 @@ kotlin {
             implementation(libs.androidx.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
-            implementation (libs.androidx.fragment.ktx)
-
+            implementation(libs.androidx.fragment.ktx)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -59,9 +59,33 @@ kotlin {
 
 
             implementation(libs.play.services.maps)
-            implementation (libs.maps.compose)
-            implementation (libs.maps.compose.utils)
-            implementation (libs.maps.compose.widgets)
+            implementation(libs.maps.compose)
+            implementation(libs.maps.compose.utils)
+            implementation(libs.maps.compose.widgets)
+
+            implementation(compose.components.resources)
+
+        }
+
+        commonTest.dependencies {
+//            implementation("org.jetbrains.kotlin:kotlin-test:2.0.20")
+//            implementation("io.ktor:ktor-server-test-host:3.0.0-beta-1")
+            implementation("io.ktor:ktor-client-mock:3.0.0-beta-1")
+            implementation("io.insert-koin:koin-test:4.0.0-RC1")
+//            implementation("io.insert-koin:koin-test-junit5:4.0.0-RC1")
+            implementation(kotlin("test"))
+//            implementation("org.junit.jupiter:junit-jupiter-api:5.11.0")
+            implementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
+
+            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+            implementation(compose.uiTest)
+
+
+//            implementation( "org.jetbrains.kotlin:kotlin-test-junit5:2.0.20")
+//            implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+//            implementation( "org.mockito.kotlin:mockito-kotlin:4.1.0")
+
+
         }
     }
 }
@@ -110,6 +134,7 @@ android {
         ignoreList.add("keyToIgnore") // Ignore the key "keyToIgnore"
         ignoreList.add("sdk.*")       // Ignore all keys matching the regexp "sdk.*"
     }
+
 
 }
 

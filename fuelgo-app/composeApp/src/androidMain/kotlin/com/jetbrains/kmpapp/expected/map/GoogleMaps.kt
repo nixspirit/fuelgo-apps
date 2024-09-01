@@ -193,7 +193,7 @@ fun GasStationMarker(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = station.fuelTypes.joinToString(", "),
+                    text = station.fuelTypes.joinToString(", ") { r -> r.title },
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(top = 10.dp),
                     style = MaterialTheme.typography.body1,
