@@ -1,0 +1,24 @@
+services:
+  fuelgo-cloud:
+    build:
+      context: ./fielgo-cloud/
+      dockerfile: Dockerfile
+    container_name: fuelgo-cloud
+    ports:
+      - "8080:8080"
+
+  station-cloud:
+    build:
+      context: ./station-cloud
+      dockerfile: Dockerfile
+    container_name: station-cloud
+    ports:
+      - "8081:8081"
+
+  pump-controller:
+    container_name: pump-controller
+    build:
+      context: ./pump-controller
+      dockerfile: Dockerfile
+    ports:
+      - '8088:80'
