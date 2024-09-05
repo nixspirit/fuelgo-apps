@@ -15,7 +15,7 @@ public class MapService {
         return Flux.just(
                 new StationData(
                         10,
-                        "Shell2",
+                        "Shell",
                         List.of(new PetrolData(5, "E5"), new PetrolData(10, "E10"), new PetrolData(100, "Diesel")),
                         52.429691722292816,
                         4.843483005707954

@@ -1,23 +1,15 @@
 package com.jetbrains.kmpapp.data.pump
 
 import com.jetbrains.kmpapp.data.EnvVars
-import com.jetbrains.kmpapp.di.dataModule
 import com.jetbrains.kmpapp.screens.map.LocationProvider
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.respond
 import io.ktor.client.engine.mock.respondBadRequest
 import io.ktor.client.engine.mock.respondOk
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.sse.SSE
 import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.headersOf
 import io.ktor.serialization.kotlinx.json.json
-import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import org.koin.core.context.startKoin
@@ -26,13 +18,12 @@ import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.inject
 import org.koin.test.mock.MockProvider
-import org.koin.test.mock.Provider
 import org.koin.test.mock.declareMock
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-class GasStationApiTest : KoinTest {
+class GasStationApiMockedTest : KoinTest {
 
     val pumpApi: PumpRepository by inject()
 
@@ -102,10 +93,6 @@ class GasStationApiTest : KoinTest {
                 install(ContentNegotiation) {
                     json(json, contentType = ContentType.Any)
                 }
-//                install(SSE) {
-//                    showCommentEvents()
-//                    showRetryEvents()
-//                }
             }
         }
     }
