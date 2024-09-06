@@ -1,6 +1,7 @@
 package com.fuelgo.pump.stationcloud.pump;
 
 import com.fuelgo.pump.stationcloud.Utils;
+import com.fuelgo.pump.stationcloud.http.FuelTypeData;
 import com.fuelgo.pump.stationcloud.http.PumpData;
 import com.fuelgo.pump.stationcloud.mappers.Mappers;
 import com.fuelgo.pump.stationcloud.petrol.PetrolEntity;
@@ -11,8 +12,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,15 +28,19 @@ public class PumpService {
      */
     public Flux<PumpData> getPumps() {
         return Flux.fromStream(Utils.toStream(pumpRepository.findAll())
-                .map(Mappers.INSTANCE::toPumpData));
+                .map(f -> {
+                    PumpData data = Mappers.INSTANCE.toPumpData(f);
+                    log.info(">>> PumpData: {}", data);
+                    return data;
+                }));
     }
 
     /**
      * @return a set of fuel types available.
      */
-    public Set<String> getFuelTypes() {
+    public Set<FuelTypeData> getFuelTypes() {
         return Utils.toStream(petrolRepository.findAll())
-                .map(PetrolEntity::getId)
+                .map(f -> new FuelTypeData(f.getId(), f.getTitle()))
                 .collect(Collectors.toSet());
     }
 
@@ -50,6 +54,13 @@ public class PumpService {
                 .orElseThrow());
     }
 
+    public Flux<FuelTypeData> getPumpFuelTypes(int id) {
+        return Flux.fromIterable(
+                Utils.toStream(petrolRepository.findAll())
+                        .map(t -> new FuelTypeData(t.getId(), t.getTitle()))
+                        .collect(Collectors.toSet()));
+    }
+
     /**
      * Saves or updates the pump with new data.
      *
@@ -58,30 +69,42 @@ public class PumpService {
     public void saveOrUpdatePumpData(PumpData pumpData) {
         log.info("Updating pump data {}", pumpData);
         Set<PetrolEntity> petrolEntities = updatePetrol(pumpData);
-        Optional<PumpEntity> pumpEntity = pumpRepository.findById(pumpData.id());
-        if (pumpEntity.isPresent()) {
-            PumpEntity pumpEntity1 = pumpEntity.get();
-            pumpEntity1.setPetrolList(petrolEntities);
-            pumpRepository.save(pumpEntity1);
-        } else {
-            pumpRepository.save(new PumpEntity(pumpData.id(), petrolEntities));
+        Optional<PumpEntity> pumpEntity = pumpRepository.findById(pumpData.objectID());
+        if (pumpEntity.isEmpty()) {
+            PumpEntity e = pumpRepository.save(new PumpEntity(pumpData.objectID(), Set.of()));
+            e.setPetrolList(petrolEntities);
+            pumpRepository.save(e);
         }
     }
 
     private Set<PetrolEntity> updatePetrol(PumpData pumpData) {
-        Set<PetrolEntity> petrolEntitySet = pumpData.petrols().stream()
-                .map(Mappers.INSTANCE::toEntity).collect(Collectors.toSet());
+        Map<String, PetrolEntity> persisted = Utils.toStream(petrolRepository.findAll())
+                .collect(Collectors.toMap(PetrolEntity::getTitle, v -> v));
 
-        return petrolEntitySet.stream().map(p -> {
+        return pumpData.petrols().stream()
+                .map(p -> {
+                    if (persisted.containsKey(p))
+                        return persisted.get(p);
+
+                    PetrolEntity entity = new PetrolEntity();
+                    entity.setTitle(p);
+                    entity.setId(getIdByTitle(p));
                     try {
-                        p = petrolRepository.save(p);
+                        entity = petrolRepository.save(entity);
                     } catch (Throwable ex) {
                         log.error("Petrol exists {}, {}", p, ex.getMessage());
                     }
-
-                    return p;
-                }
-        ).collect(Collectors.toSet());
+                    return entity;
+                })
+                .collect(Collectors.toSet());
     }
 
+    private Integer getIdByTitle(String p) {
+        return switch (p) {
+            case "E5" -> 5;
+            case "E10" -> 10;
+            case "Diesel" -> 20;
+            default -> null;
+        };
+    }
 }

@@ -23,7 +23,7 @@ public class PumpController {
     @CrossOrigin(origins = "*")
     @PostMapping(path = "/pump/{id}")
     public Mono<ResponseEntity<?>> register(@RequestBody PumpData pumpData) {
-        log.info("Pump {} registered with pumpData {}", pumpData.id(), pumpData);
+        log.info("Pump {} registered with pumpData {}", pumpData.objectID(), pumpData);
         pumpService.saveOrUpdatePumpData(pumpData);
         return Mono.just(ResponseEntity.status(HttpStatus.OK).body("{\"status\":\"ok\"}"));
     }
@@ -35,17 +35,24 @@ public class PumpController {
         return pumpService.getPumps();
     }
 
-    @Operation(summary = "Returns a state of a pump with the given id.")
+    @Operation(summary = "Returns a state of a pump with the given objectID.")
     @CrossOrigin(origins = "*")
     @GetMapping(path = "/pump/{id}")
     public Mono<PumpData> getPumpById(@PathVariable("id") int id) {
         return pumpService.getPump(id);
     }
 
+    @Operation(summary = "Returns a list of a fuel types the pump is supported.")
+    @CrossOrigin(origins = "*")
+    @GetMapping(path = "/pump/{id}/fuel-type")
+    public Flux<FuelTypeData> getPumpFuelTypes(@PathVariable("id") int id) {
+        return pumpService.getPumpFuelTypes(id);
+    }
+
     @Operation(summary = "Returns a list of all registered fuel types (E5, Diesel etc).")
     @CrossOrigin(origins = "*")
     @GetMapping(path = "/fuel/")
-    public Set<String> getFuelType() {
+    public Set<FuelTypeData> getFuelType() {
         return pumpService.getFuelTypes();
     }
 

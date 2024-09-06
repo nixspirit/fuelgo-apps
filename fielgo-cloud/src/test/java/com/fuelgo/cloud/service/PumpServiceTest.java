@@ -1,47 +1,40 @@
 package com.fuelgo.cloud.service;
 
 import com.fuelgo.cloud.helper.Utils;
+import com.fuelgo.cloud.http.contract.FuelTypeData;
 import com.fuelgo.cloud.http.contract.PumpData;
-import com.fuelgo.cloud.http.contract.StationData;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
 public class PumpServiceTest {
 
     @Autowired
     private PumpService pumpService;
 
     @Test
-    public void test_getAllStations_ok() {
-
-    }
-
-    @Test
-    public void test_getStationByCoordinates_ok() {
-
-    }
-
-    @Test
-    public void test_getStationById_ok() {
-
-        StationData stationData = pumpService.getStation(1).block();
-
-    }
-
-    @Test
     public void test_getStationPumps_ok() {
-        List<PumpData> pumpDataList = Utils.toList(pumpService.getStationPumps(1).toIterable());
-        System.out.println(">>>>>>>>> PUMPS " + pumpDataList);
+        List<PumpData> pumpDataList = Utils.toList(pumpService.getStationPumps(12).toIterable());
+        Assertions.assertNotNull(pumpDataList);
+        Assertions.assertEquals(pumpDataList.size(), 0);
     }
 
     @Test
-    public void test_getPetrolList_ok() {
-        PumpData pumpData = pumpService.getStationPumpPetrol(1, 2).block();
-        System.out.println(">>>>>>>>> PUMP " + pumpData);
+    public void test_getPetrolList_notFound() {
+        Assertions.assertThrows(Throwable.class, () -> {
+            pumpService.getStationPumpPetrol(1, 2).block();
+        });
+    }
+
+    @Test
+    public void test_getStationPumpFuelTypes_ok() {
+        List<FuelTypeData> fuelTypeData = Utils.toList(pumpService.getStationPumpFuelType(12, 10).toIterable());
+        Assertions.assertNotNull(fuelTypeData);
+        Assertions.assertEquals(fuelTypeData.size(), 0);
     }
 
 }

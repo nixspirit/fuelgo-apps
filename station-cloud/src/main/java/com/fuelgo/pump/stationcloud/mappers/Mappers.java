@@ -12,16 +12,12 @@ public interface Mappers {
 
     Mappers INSTANCE = org.mapstruct.factory.Mappers.getMapper(Mappers.class);
 
-    @Mapping(source = "petrolId", target = "id")
-    PetrolEntity toEntity(String petrolId);
-
-
-    @Mapping(source = "id", target = "id")
-    @Mapping(source = "petrolList", target = "petrols", qualifiedByName = "toPetrolId")
+    @Mapping(source = "id", target = "objectID")
+    @Mapping(source = "petrolList", target = "petrols", qualifiedByName = "toFuelId")
     PumpData toPumpData(PumpEntity pumpEntity);
 
-    @Named("toPetrolId")
-    static String toPetrolId(PetrolEntity petrolEntity) {
-        return petrolEntity.getId();
+    @Named("toFuelId")
+    static String toFuelId(PetrolEntity petrolEntity) {
+        return petrolEntity.getTitle();
     }
 }

@@ -40,8 +40,8 @@ public class PumpServiceTest {
         List<PetrolEntity> petrolEntities = Utils.toList(petrolRepository.findAll());
         Assertions.assertNotNull(petrolEntities);
         Assertions.assertEquals(2, petrolEntities.size());
-        Assertions.assertEquals("E10", petrolEntities.get(0).getId());
-        Assertions.assertEquals("E5", petrolEntities.get(1).getId());
+        Assertions.assertEquals("E5", petrolEntities.get(0).getTitle());
+        Assertions.assertEquals("E10", petrolEntities.get(1).getTitle());
 
         Optional<PumpEntity> entity = pumpRepository.findById(pumpId);
         Assertions.assertFalse(entity.isEmpty());
@@ -51,8 +51,8 @@ public class PumpServiceTest {
 
         List<PetrolEntity> petrolList = pumpEntity.getPetrolList().stream().sorted().toList();
         Assertions.assertFalse(petrolList.isEmpty());
-        Assertions.assertEquals("E10", petrolList.get(0).getId());
-        Assertions.assertEquals("E5", petrolList.get(1).getId());
+        Assertions.assertEquals("E5", petrolList.get(0).getTitle());
+        Assertions.assertEquals("E10", petrolList.get(1).getTitle());
     }
 
     @Test
@@ -60,16 +60,16 @@ public class PumpServiceTest {
         Assertions.assertEquals(0, petrolRepository.count());
         Assertions.assertEquals(0, pumpRepository.count());
 
-        Set<PetrolEntity> petrolEntitySet = Utils.toSet(petrolRepository.saveAll(List.of(new PetrolEntity("E5"), new PetrolEntity("E10"))));
+        Set<PetrolEntity> petrolEntitySet = Utils.toSet(petrolRepository.saveAll(List.of(new PetrolEntity(5, "E5"), new PetrolEntity(10, "E10"))));
         pumpRepository.save(new PumpEntity(1, petrolEntitySet));
         pumpRepository.save(new PumpEntity(2, petrolEntitySet));
 
         List<PumpData> pumpDataList = Objects.requireNonNull(pumpService.getPumps().collectList().block()).stream().sorted().toList();
         Assertions.assertFalse(pumpDataList.isEmpty());
-        Assertions.assertEquals(1, pumpDataList.get(0).id());
+        Assertions.assertEquals(1, pumpDataList.get(0).objectID());
         Assertions.assertEquals(List.of("E10", "E5"), pumpDataList.get(0).petrols().stream().sorted().toList());
 
-        Assertions.assertEquals(2, pumpDataList.get(1).id());
+        Assertions.assertEquals(2, pumpDataList.get(1).objectID());
         Assertions.assertEquals(List.of("E10", "E5"), pumpDataList.get(0).petrols().stream().sorted().toList());
     }
 }

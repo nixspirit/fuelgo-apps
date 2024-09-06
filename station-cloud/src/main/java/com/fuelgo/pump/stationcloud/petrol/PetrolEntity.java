@@ -1,8 +1,13 @@
 package com.fuelgo.pump.stationcloud.petrol;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,10 +17,12 @@ import lombok.*;
 public class PetrolEntity implements Comparable<PetrolEntity> {
 
     @Id
-    private String id;
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+    private String title;
 
     @Override
     public int compareTo(PetrolEntity o) {
-        return id.compareTo(o.id);
+        return Integer.compare(id, o.id);
     }
 }

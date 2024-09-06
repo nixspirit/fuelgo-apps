@@ -50,11 +50,7 @@ val dataModule = module {
     single<EnvVars> { EnvVars() }
     single<PumpApi> { KtorPumpApi(get(named("httpClient")), get(named("sseClient")), get(), get()) }
     single<PumpStorage> { InMemoryPumpStorage() }
-    single {
-        PumpRepository(get(), get()).apply {
-            initialize()
-        }
-    }
+    single<PumpRepository> { PumpRepository(get()) }
 }
 
 val screenModelsModule = module {

@@ -185,7 +185,7 @@ async function registerPump(id: number, petrols: string[]): Promise<{}> {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({id: id, petrols: petrols})
+        body: JSON.stringify({objectID: id, petrols: petrols})
     });
     return await response.json();
 }

@@ -1,8 +1,8 @@
 package com.fuelgo.cloud.service;
 
+import com.fuelgo.cloud.http.contract.FuelTypeData;
 import com.fuelgo.cloud.http.contract.PumpData;
 import com.fuelgo.cloud.http.contract.PumpState;
-import com.fuelgo.cloud.http.contract.StationData;
 import com.fuelgo.cloud.out.GasStationService;
 import com.fuelgo.cloud.out.GasStationStompHandler;
 import com.fuelgo.cloud.out.PumpMessage;
@@ -14,8 +14,6 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
 @AllArgsConstructor
 @Service
 public class PumpService {
@@ -23,16 +21,16 @@ public class PumpService {
     private final GasStationService gasStationService;
     private final ApplicationContext applicationContext;
 
-    public Mono<StationData> getStation(int stationId) {
-        return Mono.just(new StationData(1, "Test", List.of(), 0, 0));
-    }
-
     public Flux<PumpData> getStationPumps(int stationId) {
         return gasStationService.getPumps();
     }
 
     public Mono<PumpData> getStationPumpPetrol(int stationId, int pumpId) {
         return gasStationService.getPumpById(pumpId);
+    }
+
+    public Flux<FuelTypeData> getStationPumpFuelType(int stationId, int pumpId) {
+        return gasStationService.getPumpFuelTypes(pumpId);
     }
 
     /**
@@ -73,4 +71,5 @@ public class PumpService {
     private WebSocketStompClient getStationStompClient(StompSessionHandler sessionHandler) {
         return (WebSocketStompClient) applicationContext.getBean("stationStompClient", sessionHandler);
     }
+
 }

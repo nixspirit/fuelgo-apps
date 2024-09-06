@@ -31,7 +31,7 @@ import com.jetbrains.kmpapp.screens.mainBackgroundColor
 import com.jetbrains.kmpapp.screens.topBarColor
 import com.jetbrains.kmpapp.screens.utils.AnimatedCounter
 
-data class ProgressScreen(val pump: HasId, val petrol: HasId) : Screen {
+data class ProgressScreen(val stationId: Int, val pump: HasId, val petrol: HasId) : Screen {
 
     @Composable
     override fun Content() {
@@ -62,10 +62,6 @@ fun ProgressView(
                         color = Color.White,
                         text = ""
                     )
-//                    LinearProgressIndicator(
-//                        modifier = Modifier.fillMaxWidth().width(64.dp),
-//                        color = Color.DarkGray,
-//                    )
                 }
             }
         },

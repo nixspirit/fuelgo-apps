@@ -1,8 +1,8 @@
 package com.fuelgo.cloud.http;
 
+import com.fuelgo.cloud.http.contract.FuelTypeData;
 import com.fuelgo.cloud.http.contract.PumpData;
 import com.fuelgo.cloud.http.contract.PumpState;
-import com.fuelgo.cloud.http.contract.StationData;
 import com.fuelgo.cloud.service.PumpService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
@@ -21,13 +21,6 @@ public class PumpController {
 
     private final PumpService pumpService;
 
-    @Operation(summary = "Get a gas station information.")
-    @GetMapping("/station/{stationId}")
-    public Mono<StationData> getStation(@PathVariable int stationId) {
-        log.info("Get station {}", stationId);
-        return pumpService.getStation(stationId);
-    }
-
     @Operation(summary = "Get a list of pumps the gas station has.")
     @GetMapping("/station/{stationId}/pumps/")
     public Flux<PumpData> getStationPumps(@PathVariable int stationId) {
@@ -40,6 +33,13 @@ public class PumpController {
     public Mono<PumpData> getStationPump(@PathVariable int stationId, @PathVariable int pumpId) {
         log.info("Get station {} pump {}", stationId, pumpId);
         return pumpService.getStationPumpPetrol(stationId, pumpId);
+    }
+
+    @Operation(summary = "Get the information on the fuel type list support.")
+    @GetMapping("/station/{stationId}/pumps/{pumpId}/fuel-type")
+    public Flux<FuelTypeData> getStationPumpFuelTypes(@PathVariable int stationId, @PathVariable int pumpId) {
+        log.info(" getStationPumpFuelTypes {} pump {}", stationId, pumpId);
+        return pumpService.getStationPumpFuelType(stationId, pumpId);
     }
 
     @Operation(summary = "Provides a real time update on the fueling process using SSE.")

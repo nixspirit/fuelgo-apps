@@ -34,4 +34,20 @@ class GasStationApiTest : KoinTest {
         assertEquals(12, gasStations.value[1]?.objectID)
         assertEquals("Total", gasStations.value[1]?.title)
     }
+
+    @Test
+    fun `should return a gas station by its id`() = runBlocking {
+        startKoin {
+            modules(dataModule)
+        }
+        val gasStations = pumpApi.getGasStationById(10)
+        delay(2000)
+
+        println(gasStations.value)
+        assertNotNull(gasStations.value)
+
+        assertEquals(10, gasStations.value?.objectID)
+        assertEquals("Shell", gasStations.value?.title)
+
+    }
 }

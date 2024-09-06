@@ -6,5 +6,7 @@ import com.jetbrains.kmpapp.data.pump.PumpRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class PetrolScreenModel(private val pumpRepository: PumpRepository) : ScreenModel {
-    fun getPetrolTypes(objectId: Int): MutableStateFlow<List<PetrolObject?>> = pumpRepository.getPetrolTypes(objectId)
+
+    fun getPetrolTypes(stationId: Int, objectId: Int): MutableStateFlow<List<PetrolObject?>> =
+        pumpRepository.getPetrolTypes(stationId, objectId)
 }

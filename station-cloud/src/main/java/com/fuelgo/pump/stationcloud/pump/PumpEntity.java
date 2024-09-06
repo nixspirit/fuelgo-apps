@@ -1,9 +1,7 @@
 package com.fuelgo.pump.stationcloud.pump;
 
 import com.fuelgo.pump.stationcloud.petrol.PetrolEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
@@ -16,6 +14,7 @@ import java.util.Set;
 public class PumpEntity implements Comparable<PumpEntity> {
 
     @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     @ManyToMany

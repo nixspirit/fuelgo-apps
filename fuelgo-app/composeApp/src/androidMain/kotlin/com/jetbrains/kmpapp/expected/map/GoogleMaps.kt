@@ -169,7 +169,7 @@ fun GasStationMarker(
     MarkerInfoWindow(
         state = rememberMarkerState(position = LatLng(station.lat, station.lon)),
         icon = icon,
-        onInfoWindowClick = { navigator.push(PumpScreen) }
+        onInfoWindowClick = { navigator.push(PumpScreen(station.objectID)) }
     ) { marker ->
         marker.title = station.title
         Box(
@@ -205,7 +205,10 @@ fun GasStationMarker(
     }
 }
 
-//https://github.com/BoltUIX/Compose-Google-Map/blob/main/app/src/main/java/com/compose/example/MainActivity.kt
+/**
+ * This method is taken from
+ * https://github.com/BoltUIX/Compose-Google-Map/blob/main/app/src/main/java/com/compose/example/MainActivity.kt
+ */
 fun bitmapDescriptorFromVector(
     context: Context,
     vectorResId: Int,
