@@ -5,6 +5,6 @@ package com.fuelgo.cloud.out;
 public record PumpMessage(int id, float litres, int grade, String gradeName, int event, String eventName) {
 
     public boolean isTerminate() {
-        return event() == 3 || event() == -1;
+        return event() == 3;// || event() == -1;
     }
 }

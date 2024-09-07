@@ -9,4 +9,6 @@ public class PumpState {
 
     private long id;
     private float diff;
+    private float total;
+    private int event;
 }

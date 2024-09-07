@@ -102,7 +102,7 @@ fun MainView(
 @Composable
 fun GridView(
     objects: List<*>,
-    onObjectClick: (HasId) -> Unit,
+    onObjectClick: (HasId) -> Unit = {},
     itemBackgroundImage: DrawableResource,
 ) {
 

@@ -38,7 +38,9 @@ data class ProgressScreen(val stationId: Int, val pump: HasId, val petrol: HasId
         val navigator = LocalNavigator.currentOrThrow
         val screenModel: ProgressScreenModel = getScreenModel()
         val litreCounter =
-            screenModel.getPumpProgress(pump.objectID, petrol.objectID).collectAsState()
+            screenModel.getPumpProgress(pump.objectID, petrol.objectID) {
+                navigator.push(PaymentScreen(stationId, pump))
+            }.collectAsState()
 
         ProgressView(petrol = petrol, progressObject = litreCounter)
     }

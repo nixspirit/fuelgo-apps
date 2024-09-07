@@ -10,8 +10,8 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class PumpMessageHandler {
 
-    @MessageMapping("/pump/{objectID}/state")
-    @SendTo(value = {"/topic/pump/{objectID}"})
+    @MessageMapping("/pump/{id}/state")
+    @SendTo(value = {"/topic/pump/{id}"})
     public PumpMessage pumpMessage(@DestinationVariable("id") int id, PumpMessage message) throws Exception {
         log.info("PumpMessage received: {}# {}", id, message);
         return message;

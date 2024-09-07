@@ -162,6 +162,7 @@ const Pump = (props: PumpProps) => {
 
                         } else if (value === 3) {
                             setStart(false);
+                            props.onChange(newPumpState);
                             newPumpState = getEmptyState();
                         }
 

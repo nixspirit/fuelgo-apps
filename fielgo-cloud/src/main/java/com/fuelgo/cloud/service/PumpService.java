@@ -7,13 +7,16 @@ import com.fuelgo.cloud.out.GasStationService;
 import com.fuelgo.cloud.out.GasStationStompHandler;
 import com.fuelgo.cloud.out.PumpMessage;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.messaging.simp.stomp.StompSessionHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @AllArgsConstructor
 @Service
 public class PumpService {
@@ -47,20 +50,16 @@ public class PumpService {
     public Flux<PumpState> fueling(int stationId, int pumpId, int petrolId) {
         GasStationStompHandler sessionHandler = new GasStationStompHandler(pumpId);
         WebSocketStompClient stationStompClient = getStationStompClient(sessionHandler);
-        return Flux.<PumpMessage>create(fluxSink -> {
-                    while (true) {
-                        try {
-                            PumpMessage t = sessionHandler.nextMessage();
-                            fluxSink.next(t);
-                            if (t.isTerminate())
-                                break;
-
-                        } catch (InterruptedException e) {
-                            fluxSink.error(new RuntimeException(e));
-                        }
+        return Flux.<PumpMessage>generate(fluxSink -> {
+                    try {
+                        PumpMessage t = sessionHandler.nextMessage();
+                        log.info("> Message sent to the fuelgo-app back {}", t);
+                        fluxSink.next(t);
+                    } catch (InterruptedException e) {
+                        fluxSink.error(new RuntimeException(e));
                     }
                 }).takeUntil(PumpMessage::isTerminate)
-                .map(pm -> new PumpState(pm.id(), pm.litres()))
+                .map(pm -> new PumpState(pm.id(), pm.litres(), pm.litres(), pm.event()))
                 .doFinally(d -> stationStompClient.stop());
     }
 

@@ -35,7 +35,7 @@ public class PumpController {
         return pumpService.getPumps();
     }
 
-    @Operation(summary = "Returns a state of a pump with the given objectID.")
+    @Operation(summary = "Returns a state of a pump with the given id.")
     @CrossOrigin(origins = "*")
     @GetMapping(path = "/pump/{id}")
     public Mono<PumpData> getPumpById(@PathVariable("id") int id) {

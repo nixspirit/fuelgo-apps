@@ -3,7 +3,6 @@ package com.jetbrains.kmpapp.data.pump
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -45,7 +44,7 @@ class PumpRepository(
     }
 
     fun getPumps(stationId: Int): MutableStateFlow<List<PumpObject?>> {
-        val result = MutableStateFlow<List<PumpObject?>>(listOf())
+        val result = MutableStateFlow<List<PumpObject?>>(ArrayList())
         scope.launch {
             result.value = pumpApi.getPumps(stationId)
         }
@@ -68,12 +67,22 @@ class PumpRepository(
         return result
     }
 
-    fun getPumpStatus(pumpId: Int, petrolId: Int): MutableStateFlow<Float> {
+    fun getPumpStatus(
+        pumpId: Int,
+        petrolId: Int,
+        onFinished: () -> Unit = {}
+    ): MutableStateFlow<Float> {
         val status = MutableStateFlow(0F)
         scope.launch {
             delay(2000L)
             pumpApi.watchFilling(pumpId, petrolId) { event ->
-                status.value += event.diff
+                println(">> filling $event")
+                status.value = event.diff
+
+                if (event.event == 3) {
+                    println(">> Closed by ${event.event}")
+                    onFinished()
+                }
             }
         }
 

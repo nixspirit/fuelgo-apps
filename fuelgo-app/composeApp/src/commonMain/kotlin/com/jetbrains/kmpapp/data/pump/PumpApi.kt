@@ -132,17 +132,30 @@ class KtorPumpApi(
         petrolId: Int,
         eventProcessor: (PetrolStatus) -> Unit
     ) {
-        sseClient.sse(host = envVar.backendUrl, port = envVar.port, path = "/events") {
+        val path = "/station/10/pumps/$pumpId/petrol/$petrolId/fueling"
+
+        println(">> sse $sseClient")
+        println(">> host $envVar")
+        println(">> path $path")
+
+        sseClient.sse(
+            host = envVar.backendUrl,
+            port = envVar.port,
+            path = path,
+        ) {
             while (true) {
                 incoming.collect { event ->
                     println("Event from server: " + event.data)
 
                     val jsonString: PetrolStatus? =
                         event.data?.let { Json.decodeFromString<PetrolStatus>(it) }
-                    println("OBJ from JSON $jsonString")
 
                     if (jsonString != null) {
                         eventProcessor(jsonString)
+                    }
+
+                    if (jsonString?.event == 3){
+                        sseClient.close()
                     }
                 }
             }
