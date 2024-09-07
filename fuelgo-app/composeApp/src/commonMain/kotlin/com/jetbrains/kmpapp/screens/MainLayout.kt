@@ -200,7 +200,7 @@ fun PumpButton(
                     painter = painterResource(backgroundImage),
                     contentDescription = "pump"
                 )
-                OutlinedText(pump.title)
+                OutlinedText(if (pump.title == "Diesel") "DSL" else pump.title)
             }
         }
     )

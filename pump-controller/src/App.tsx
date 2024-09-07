@@ -122,7 +122,7 @@ const Pump = (props: PumpProps) => {
                                    allowedDecimalSeparators={['.']} decimalScale={2}
                     />
                 </Text>
-                <Text h3>Grade of gasoline</Text>
+                <Text h3>Fuel Type</Text>
                 <ButtonGroup
                     buttons={PETROLS}
                     selectedIndex={pumpState.grade}

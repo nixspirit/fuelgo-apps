@@ -25,8 +25,6 @@ data class PetrolScreen(val stationId: Int, val pump: HasId) : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val screenModel: PetrolScreenModel = getScreenModel()
-
-//        val petrolTypes by screenModel.getPetrolTypes(stationId, pump.objectID).collectAsState()
         val petrolTypes by remember {
             mutableStateOf(
                 screenModel.getPetrolTypes(
